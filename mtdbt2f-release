@@ -1,0 +1,89 @@
+#!/bin/bash
+
+echo `date` > ~/mdate.txt
+
+# this is used to check on next candidate for release
+# read first from text file of last known release
+# then try if the next file exists --
+# if so, then cp etc and also update the text file
+# number of last release is in mtdbt2f4d.txt
+# running as .sh in cron requires aboslute paths
+
+COUNTER=0
+EXIT=521	# the total number of fonts to try
+SLEEP=5		# this if for dev only
+RELEASED=`cat ~/public_html/META-THE-DIFFERENCE/src/v1.1/mtdbt2f4d-src/mtdbt2f4d.txt`
+
+
+
+# unpack archive
+# does not work in cron
+# unzip -q -P mtdbt2f4d -d ~/public_html/META-THE-DIFFERENCE/src/v1.1/mtdbt2f4d-src/ ~/public_html/META-THE-DIFFERENCE/src/v1.1/mtdbt2f4d-src/src.zip
+
+
+
+# main
+
+let CANDIDATE=RELEASED+1
+
+if [ $CANDIDATE -gt $EXIT ]; then
+	let CANDIDATE=0
+fi
+
+while [ $COUNTER -lt $EXIT ]; do
+
+	if [ -f ~/public_html/META-THE-DIFFERENCE/src/v1.1/mtdbt2f4d-src/.ttf/mtdbt2f4d-$CANDIDATE.ttf ]; then
+
+		echo $CANDIDATE > ~/public_html/META-THE-DIFFERENCE/src/v1.1/mtdbt2f4d-src/mtdbt2f4d.txt
+		echo "** mtdbt2f4d-$CANDIDATE.ttf ** released."
+
+		# backup
+		cp ~/public_html/META-THE-DIFFERENCE/out/kadist/pdf/mtdbt2f4d.pdf ~/public_html/META-THE-DIFFERENCE/out/kadist/pdf/mtdbt2f4d-$RELEASED.pdf
+		cp ~/public_html/META-THE-DIFFERENCE/out/kadist/png/mtdbt2f4d.png ~/public_html/META-THE-DIFFERENCE/out/kadist/png/mtdbt2f4d-$RELEASED.png
+		cp ~/public_html/META-THE-DIFFERENCE/out/kadist/ttf/mtdbt2f4d.ttf ~/public_html/META-THE-DIFFERENCE/out/kadist/ttf/mtdbt2f4d-$RELEASED.ttf
+		cp ~/public_html/META-THE-DIFFERENCE/out/kadist/eot/mtdbt2f4d.eot ~/public_html/META-THE-DIFFERENCE/out/kadist/eot/mtdbt2f4d-$RELEASED.eot
+		cp ~/public_html/META-THE-DIFFERENCE/out/kadist/woff/mtdbt2f4d.woff ~/public_html/META-THE-DIFFERENCE/out/kadist/woff/mtdbt2f4d-$RELEASED.woff
+
+		# install
+		cp ~/public_html/META-THE-DIFFERENCE/src/v1.1/mtdbt2f4d-src/.pdf/mtdbt2f4d-$CANDIDATE.pdf ~/public_html/META-THE-DIFFERENCE/out/kadist/pdf/mtdbt2f4d.pdf
+		cp ~/public_html/META-THE-DIFFERENCE/src/v1.1/mtdbt2f4d-src/.png/mtdbt2f4d-$CANDIDATE.png ~/public_html/META-THE-DIFFERENCE/out/kadist/png/mtdbt2f4d.png
+		cp ~/public_html/META-THE-DIFFERENCE/src/v1.1/mtdbt2f4d-src/.ttf/mtdbt2f4d-$CANDIDATE.ttf ~/public_html/META-THE-DIFFERENCE/out/kadist/ttf/mtdbt2f4d.ttf
+		cp ~/public_html/META-THE-DIFFERENCE/src/v1.1/mtdbt2f4d-src/.eot/mtdbt2f4d-$CANDIDATE.eot ~/public_html/META-THE-DIFFERENCE/out/kadist/eot/mtdbt2f4d.eot
+		cp ~/public_html/META-THE-DIFFERENCE/src/v1.1/mtdbt2f4d-src/.woff/mtdbt2f4d-$CANDIDATE.woff ~/public_html/META-THE-DIFFERENCE/out/kadist/woff/mtdbt2f4d.woff
+		
+		# cp ~/public_html/META-THE-DIFFERENCE/src/v1.1/mtdbt2f4d-src/.ttf/mtdbt2f4d-$CANDIDATE.ttf ~/www/sites/all/themes/gui/kadist/css/metafont/metafont-webfont/mtdbt2f4d.ttf
+		# cp ~/public_html/META-THE-DIFFERENCE/src/v1.1/mtdbt2f4d-src/.eot/mtdbt2f4d-$CANDIDATE.eot ~/www/sites/all/themes/gui/kadist/css/metafont/metafont-webfont/mtdbt2f4d.eot
+		# cp ~/public_html/META-THE-DIFFERENCE/src/v1.1/mtdbt2f4d-src/.woff/mtdbt2f4d-$CANDIDATE.woff ~/www/sites/all/themes/gui/kadist/css/metafont/metafont-webfont/mtdbt2f4d.woff
+
+		# public url
+		# http://www.kadist.org/sites/kadist.org/files/mtdbt2f4d/pdf/mtdbt2f4d.pdf
+		# http://www.kadist.org/sites/kadist.org/files/mtdbt2f4d/png/mtdbt2f4d.png
+		# http://www.kadist.org/sites/kadist.org/files/mtdbt2f4d/ttf/mtdbt2f4d.ttf
+		# http://www.kadist.org/sites/kadist.org/files/mtdbt2f4d/eot/mtdbt2f4d.eot
+		# http://www.kadist.org/sites/kadist.org/files/mtdbt2f4d/woff/mtdbt2f4d.woff
+
+		break
+	else
+		let CANDIDATE=CANDIDATE+1
+		echo "No release candidate found. Trying again ..."		
+	fi
+	
+	let COUNTER=COUNTER+1
+	echo "candidate = $CANDIDATE"
+	# sleep $SLEEP
+done
+
+# cleanup
+
+# rm -r ~/public_html/META-THE-DIFFERENCE/src/v1.1/mtdbt2f4d-src/.pdf
+# rm -r ~/public_html/META-THE-DIFFERENCE/src/v1.1/mtdbt2f4d-src/.png
+# rm -r ~/public_html/META-THE-DIFFERENCE/src/v1.1/mtdbt2f4d-src/.ttf
+# rm -r ~/public_html/META-THE-DIFFERENCE/src/v1.1/mtdbt2f4d-src/.eot
+# rm -r ~/public_html/META-THE-DIFFERENCE/src/v1.1/mtdbt2f4d-src/.woff
+
+# date and done
+
+echo `date`
+echo "mtdbt2f4d-release exited ok."
+echo "Thank you."
+echo "*"

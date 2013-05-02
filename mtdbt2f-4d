@@ -1,0 +1,428 @@
+#!/bin/bash
+
+# set defaults
+
+FILE_IN=mtdbt2f4d-init.mf
+SLEEP=0
+STEPS=10
+KEEP=1		# 0 write over one file, 1 keep sequenced files
+QUIET=0         # 0 default, 1 dont -compile
+DAEMON=0	# run as daemon (KEEP=0, EXIT=0)
+ARCHIVE=0	# 0 default, 1 generate mtdbt2f4d.ttf plus sequenced copies
+EXIT=0
+COUNTER=0
+IN_RANGE=0
+RANGE_SWITCH=1
+WEIGHTED_STEP=0
+
+WEIGHT=50
+WEIGHT_MIN=0
+WEIGHT_MAX=200
+WEIGHT_STEP=0
+WEIGHT_IN_RANGE=0
+WEIGHT_RANGE_SWITCH=1
+
+SLANT=0
+SLANT_MIN=-2.0
+SLANT_MAX=2.0
+SLANT_STEP=0
+SLANT_IN_RANGE=0
+SLANT_RANGE_SWITCH=1
+
+SUPER=.75
+SUPER_MIN=0.0
+SUPER_MAX=1.0
+SUPER_STEP=0
+SUPER_IN_RANGE=0
+SUPER_RANGE_SWITCH=1
+
+PENTYPE_GENERATE=0	# 0 no, 1 yes
+PENTYPE=0 # 0 = ellipse or 1 = rect
+PENTYPE_FLAG=0
+
+PENXY=1.0
+PENXY_MIN=.10 
+PENXY_MAX=30.0 
+PENXY_STEP=0
+PENXY_IN_RANGE=0
+PENXY_RANGE_SWITCH=1
+
+PENR=0
+PENR_MIN=0
+PENR_MAX=180
+PENR_STEP=0
+PENR_IN_RANGE=0
+PENR_RANGE_SWITCH=1
+
+
+
+# parse command line options
+
+while [ "$1" != "" ]; do
+    case $1 in
+        -f | --file )           shift
+                                FILE_IN=$1;;
+        -c | --counter )        shift
+                                COUNTER=$1;;
+        -t | --steps )          shift
+                                STEPS=$1;;
+        -S | --sleep )          shift
+                                SLEEP=$1;;
+        -x | --exit )           shift
+                                EXIT=$1;;	# loop EXIT times and quit
+        -w | --weight )         shift
+                                WEIGHT_MIN=$1
+                                shift
+                                WEIGHT_MAX=$1;;
+        -s | --slant )          shift
+                                SLANT_MIN=$1
+                                shift
+                                SLANT_MAX=$1;;
+        -u | --super )          shift
+                                SUPER_MIN=$1
+                                shift
+                                SUPER_MAX=$1;;
+        -p | --pen )            shift
+                                PENTYPE=$1
+                                shift
+                                PENXY_MIN=$1
+                                shift
+                                PENXY_MAX=$1
+                                shift
+                                PENR_MIN=$1
+                                shift
+                                PENR_MAX=$1;;
+        -k | --keep )           shift
+                                KEEP=$1;;
+        -a | --archive )        shift
+	THIS_MEAN = `echo "($3 - $2) / 2" | bc -l`
+                                ARCHIVE=$1;;
+        -d | --daemon )		shift
+                                DAEMON=$1;;
+        -l | --cleanup )	shift
+                                CLEANUP=$1;;
+	-q | --quiet )		shift
+				QUIET=$1;;
+        -h | --help )           shift
+				echo -e "\
+Usage: mtdbt2f-4d [OPTION]... [FILE]...
+Random walk through 4-dimensional possibility space of Meta-the-Difference-Between-the-2-Font parameter values.
+
+  -f, --file		   	FILE in metafont format (.mf)
+				default = mtdbt2f4d-init.mf
+				other values must escape hyphens
+  -c, --counter                 [0] default
+				[n] starting number for generated fonts
+  -t, --steps          		number of positions between parameter limits
+  -S, --sleep          		[0] seconds to pause before next walk
+  -x, --exit 			number of loops before stop
+  -w, --weight		        min max [10 500]
+  -s, --slant     		min max [-2 2]
+  -u. --super			min max [.01 2.0]
+  -p, --pen      		type xy_min xy_max rotate_min rotate_max 
+  -k, --keep			[0] write over one file 
+  				[1] default, keep sequenced files
+  -a, --archive			[0] default 
+  				[1] generate 1 file, cp sequenced files
+  -d, --daemon			[0] default 
+  				[1] set KEEP=0, EXIT=0, run continuous
+  -l, --cleanup			[0] don't cleanup files
+				[1] default
+  -q, --quiet			[0] default
+  				[1] don't -compile, output to stdout
+  -h, --help			show help
+"
+				exit;;
+    esac
+    shift
+done
+
+
+
+# initial cleanup
+
+if [ "$QUIET" != "1" ] && [ "$CLEANUP" != "0" ]; then
+	rm mtdbt2f4d.mf
+	rm mtdbt2f4d-[0-9]*
+	rm Out/mtdbt2f4d*
+fi
+
+
+
+# read parameters 
+
+if [ -f "$FILE_IN" ]; then
+
+	# cat | grep | tr for each
+
+ 	WEIGHT=$(cat $FILE_IN | grep "weight:=" | tr -dc '^(\-)?$+[0-9]+(\.[0-9])?$')
+        SLANT=$(cat $FILE_IN | grep "slant:=" | tr -dc '^(\-)?$+[0-9]+(\.[0-9])?$')
+        SUPER=$(cat $FILE_IN | grep "superness:=" | tr -dc '^(\-)?$+[0-9]+(\.[0-9])?$')
+        PENTYPE=$(cat $FILE_IN | grep "penType:=" | tr -dc '^(\-)?$+[0-9]+(\.[0-9])?$')
+        PENX=$(cat $FILE_IN | grep "penX:=" | tr -dc '^(\-)?$+[0-9]+(\.[0-9])$')
+        PENY=$(cat $FILE_IN | grep "penY:=" | tr -dc '^(\-)?$+[0-9]+(\.[0-9])$')
+	PENXY=$(echo "$PENX / $PENY" | bc -l) 
+        PENR=$(cat $FILE_IN | grep "penR:=" | tr -dc '^(\-)?$+[0-9]+(\.[0-9])$')
+fi
+
+echo "WEIGHT=$WEIGHT"
+echo "SLANT=$SLANT"
+echo "SUPER=$SUPER"
+echo "PENTYPE=$PENTYPE"
+echo "PENX=$PENX" 
+echo "PENY=$PENY"
+echo "PENXY=$PENXY"
+echo "PENR=$PENR"
+echo "PENTYPE=$PENTYPE"
+
+
+
+# calculate ranges and steps 
+# add random noise to get parameters changing at different rates ?
+# could add weights to each of these to change more or less
+# SUPER_STEP_WEIGHT=.75
+# SUPER_STEP=$(echo "((($SUPER_MAX - $SUPER_MIN) / $STEPS) * $SUPER_STEP_WEIGHT)" | bc -l)
+
+WEIGHT_STEP=$(echo "(($WEIGHT_MAX - $WEIGHT_MIN) / $STEPS)" | bc -l)
+SLANT_STEP=$(echo "(($SLANT_MAX - $SLANT_MIN) / $STEPS)" | bc -l)
+SUPER_STEP=$(echo "(($SUPER_MAX - $SUPER_MIN) / $STEPS)" | bc -l)
+PENXY_STEP=$(echo "(($PENXY_MAX - $PENXY_MIN) / $STEPS)" | bc -l)
+PENR_STEP=$(echo "(($PENR_MAX - $PENR_MIN) / $STEPS)" | bc -l)
+
+echo "** initialization complete. **"
+
+
+
+# random walk
+
+function randomWalk {	
+	# (increase) (decrease) or (nothing)
+	# random number between 0 and 2, subtract 1 to get -1, 0, 1
+	# this presents a problem when -1 and multiplying by _SWITCH
+	# let "RANDOMWALK = $RANDOM % 3 -1"
+
+	# (increase/decrease) or (nothing)
+	# random binary number 0 and 1
+	let "RANDOMWALK = $RANDOM % 2"	
+}
+
+
+
+# calculate weighted step values
+# trying to transform a set of values and keep within range
+# but getting stuck in the math when value exceeds the mean, then runs away
+
+function weightedStep {	
+	# takes even STEP_ values calculated above and weights them, 
+	# remaps result within range _MIN _MAX
+	# $1 _CURRENT
+	# $2 _MIN
+	# $3 _MAX  
+	# $4 _STEP
+	# $5 _RANGE_SWITCH
+
+	# f(x) = x ^ 2, for example
+	WEIGHT_FUNCTION=2
+
+	THIS_MEAN=`echo "($3 - $2) / 2" | bc -l`
+	THIS_RANGE=`echo "$3 - $2" | bc -l`
+	WEIGHTED_MEAN=`echo "($THIS_MEAN ^ $WEIGHT_FUNCTION)" | bc -l`
+	WEIGHTED_RANGE=`echo "($WEIGHTED_MEAN * 2)" | bc -l`
+
+        if [ $(echo "$1 <= $THIS_MEAN" | bc) -eq 1 ]; then
+		THIS_DISTANCE_FROM_MEAN=`echo "$THIS_MEAN - $1" | bc -l` 
+		WEIGHTED_DISTANCE_FROM_MEAN=`echo "($THIS_DISTANCE_FROM_MEAN ^ $WEIGHT_FUNCTION)" | bc -l`
+		# this is superfluous
+		WEIGHTED_VALUE=`echo "$WEIGHTED_MEAN - $WEIGHTED_DISTANCE_FROM_MEAN" | bc -l`
+	else
+		THIS_DISTANCE_FROM_MEAN=`echo "$THIS_MEAN + $1" | bc -l` 
+		WEIGHTED_DISTANCE_FROM_MEAN=`echo "($THIS_DISTANCE_FROM_MEAN ^ $WEIGHT_FUNCTION)" | bc -l`
+		# this is superfluous
+		WEIGHTED_VALUE=`echo "$WEIGHTED_MEAN + $WEIGHTED_DISTANCE_FROM_MEAN" | bc -l`
+	fi
+
+        if [ $RANDOMWALK -eq 1 ]; then
+
+		# it is the range switch giving troubles again -- need to trace the logic
+		# when _CURRENT exceeds _MEAN then numbers go nuts
+ 
+        	if [ $(echo "($1 + ($4 * $5)) >= $2" | bc) -eq 1 ] && [ $(echo "($1 + ($4 * $5)) <= $3" | bc) -eq 1 ]; then
+			# increment in direction of _RANGE_SWITCH
+                	NEXT_DISTANCE_FROM_MEAN=`echo "$1 + ($4 * $5)" | bc -l`
+		fi
+	else
+                NEXT_DISTANCE_FROM_MEAN=`echo "$1"`
+	fi
+
+	NEXT_WEIGHTED_DISTANCE_FROM_MEAN=`echo "($NEXT_DISTANCE_FROM_MEAN ^ $WEIGHT_FUNCTION)" | bc -l`
+		# this is already either positive or negative as appopriate based on _RANGE_SWITCH if above, so all set!
+	WEIGHTED_STEP=`echo "(($WEIGHTED_DISTANCE_FROM_MEAN - $NEXT_WEIGHTED_DISTANCE_FROM_MEAN) * $THIS_RANGE) / ($WEIGHTED_RANGE)" | bc -l`
+	
+	echo RANDOMWALK = $RANDOMWALK
+	echo THIS_MEAN = $THIS_MEAN
+	echo THIS_RANGE = $THIS_RANGE
+	echo WEIGHTED_MEAN = $WEIGHTED_MEAN
+	echo WEIGHTED_RANGE = $WEIGHTED_RANGE
+	echo THIS_DISTANCE_FROM_MEAN = $THIS_DISTANCE_FROM_MEAN
+	echo NEXT_DISTANCE_FROM_MEAN = $NEXT_DISTANCE_FROM_MEAN
+	echo WEIGHTED_DISTANCE_FROM_MEAN = $WEIGHTED_DISTANCE_FROM_MEAN
+	echo NEXT_WEIGHTED_DISTANCE_FROM_MEAN = $NEXT_WEIGHTED_DISTANCE_FROM_MEAN
+	echo THIS_VALUE = $1
+	echo THIS_STEP = $4
+	echo WEIGHTED_VALUE = $WEIGHTED_VALUE
+	echo WEIGHTED_STEP = $WEIGHTED_STEP
+	echo "----"
+}
+
+
+
+# in range?
+
+function inRange {	
+	# uses six arguments and returns value if in between these
+	# $1 test value
+	# $2 _MIN
+	# $3 _MAX
+	# $4 _STEP
+	# $5 _IN_RANGE {0,1}
+	# $6 _RANGE_SWITCH {-1, 1}
+	# bc is used to evaluate floating point expression
+
+	if [ $(echo "$1 - $4 > $2" | bc) -eq 1 ] && [ $(echo "$1 + $4 < $3" | bc) -eq 1 ]; then 
+		# in range -- continue
+		let "IN_RANGE = 1"
+		let "RANGE_SWITCH = $6"
+	else 
+		# out of range
+		# if in_range=1 then it is the first time, so flip switch
+
+		if [ $5 = 1 ]; then 
+			let "IN_RANGE = 0"
+			let "RANGE_SWITCH = -1 * $6"
+		else
+			let "IN_RANGE = 0"
+			let "RANGE_SWITCH = $6"
+		fi
+	fi
+}
+
+
+
+# main
+
+# check each parameter if in range then set randomWalk and increment value 
+# call -make with --steps 0 to make a new font and go to sleep
+
+# run as daemon ?
+
+if [ "$DAEMON" = "1" ]; then
+	let "KEEP = 0"
+	let "EXIT = 0"
+fi
+
+# so you can start with another file and build in sequence using COUNTER arg
+
+EXITMAX=`echo $[$EXIT+$COUNTER]`
+
+while [ $EXIT = 0 ] || [ $COUNTER -lt $EXITMAX ]; do
+
+	# test for min or max values and then flip ( * -1 ) if reach limit
+
+	# weight
+	inRange $WEIGHT $WEIGHT_MIN $WEIGHT_MAX $WEIGHT_STEP $WEIGHT_IN_RANGE $WEIGHT_RANGE_SWITCH
+	let "WEIGHT_IN_RANGE = $IN_RANGE"
+	let "WEIGHT_RANGE_SWITCH = $RANGE_SWITCH"
+	randomWalk
+	WEIGHT=`echo "$WEIGHT + ($RANDOMWALK * $WEIGHT_STEP * $WEIGHT_RANGE_SWITCH)" | bc -l`
+
+	# use these lines for WEIGHTED STEPS (** currently in process **)
+	# weightedStep $WEIGHT $WEIGHT_MIN $WEIGHT_MAX $WEIGHT_STEP $WEIGHT_RANGE_SWITCH
+	# WEIGHT=`echo "$WEIGHT + $WEIGHTED_STEP" | bc -l`
+
+        # slant
+        inRange $SLANT $SLANT_MIN $SLANT_MAX $SLANT_STEP $SLANT_IN_RANGE $SLANT_RANGE_SWITCH
+        let "SLANT_IN_RANGE = $IN_RANGE"
+        let "SLANT_RANGE_SWITCH = $RANGE_SWITCH"
+        randomWalk
+        SLANT=`echo "$SLANT + ($RANDOMWALK * $SLANT_STEP * $SLANT_RANGE_SWITCH)" | bc -l`
+
+        # super
+        inRange $SUPER $SUPER_MIN $SUPER_MAX $SUPER_STEP $SUPER_IN_RANGE $SUPER_RANGE_SWITCH
+        let "SUPER_IN_RANGE = $IN_RANGE"
+        let "SUPER_RANGE_SWITCH = $RANGE_SWITCH"
+        randomWalk
+        SUPER=`echo "$SUPER + ($RANDOMWALK * $SUPER_STEP * $SUPER_RANGE_SWITCH)" | bc -l`
+
+        # penXY
+        inRange $PENXY $PENXY_MIN $PENXY_MAX $PENXY_STEP $PENXY_IN_RANGE $PENXY_RANGE_SWITCH
+        let "PENXY_IN_RANGE = $IN_RANGE"
+        let "PENXY_RANGE_SWITCH = $RANGE_SWITCH"
+        randomWalk
+        PENXY=`echo "$PENXY + ($RANDOMWALK * $PENXY_STEP * $PENXY_RANGE_SWITCH)" | bc -l`
+
+        # penR
+        inRange $PENR $PENR_MIN $PENR_MAX $PENR_STEP $PENR_IN_RANGE $PENR_RANGE_SWITCH
+        let "PENR_IN_RANGE = $IN_RANGE"
+        let "PENR_RANGE_SWITCH = $RANGE_SWITCH"
+        randomWalk
+        PENR=`echo "$PENR + ($RANDOMWALK * $PENR_STEP * $PENR_RANGE_SWITCH)" | bc -l`
+
+	# penType
+	# flips on $PENXY_RANGE_SWITCH
+	if [ $PENTYPE_GENERATE -eq 1 ]; then
+		if [ $(echo "($PENXY_RANGE_SWITCH < 0)" | bc) -eq 1 ] && [ $PENTYPE_FLAG -eq 0 ]; then
+			if [ $PENTYPE -eq 0 ]; then
+				let "PENTYPE = 1"
+			else
+        			let "PENTYPE = 0"
+			fi
+			let "PENTYPE_FLAG = 1"
+		fi
+		if [ $(echo "($PENXY_RANGE_SWITCH > 0)" | bc) -eq 1 ] && [ $PENTYPE_FLAG -eq 1 ]; then
+			let "PENTYPE_FLAG = 0"
+		fi
+	fi
+
+	echo "WEIGHT=$WEIGHT"
+	echo "SLANT=$SLANT"
+	echo "SUPER=$SUPER"
+	echo "PENXY=$PENXY"
+	echo "PENR=$PENR"
+	echo "PENTYPE=$PENTYPE"
+
+        # run mtdbt2f-make to generate .mf source 
+	# same value for _min & _max and steps = 0
+
+	if [ "$QUIET" != "1" ]; then
+		mtdbt2f-make 	--file $FILE_IN \
+				--counter $COUNTER \
+				--steps 0 \
+				--weight $WEIGHT $WEIGHT \
+				--slant $SLANT $SLANT \
+				--super $SUPER $SUPER \
+				--pen $PENTYPE $PENXY $PENXY $PENR $PENR \
+				--keep $KEEP \
+				--archive $ARCHIVE \
+				--quiet 0 \
+				--cleanup 0
+        fi
+
+	# daemon ? copy resulting .ttf to ~/Library/Fonts
+	# could be more generic if parse IN_FILE to get just the root name
+
+	if [ "$DAEMON" = "1" ]; then
+		cp Out/mtdbt2f4d.ttf ~/Library/Fonts/
+		# maybe this will help to keep the file fresh?
+		# touch ~/Library/Fonts/mtdbt2f4d.ttf
+	fi
+
+	echo "** sleep for $SLEEP seconds **"
+
+        let COUNTER=COUNTER+1
+	sleep $SLEEP
+done
+
+echo -e "** mtdbt2f-4d ok **"
+echo -e "Bye."
+
+# end

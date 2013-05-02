@@ -1,0 +1,76 @@
+#!/bin/bash
+
+# generates woff and eot formats from existing ttf font files
+# use with option of --in ttf AND --out ttf to rename a series  
+# of mtdbt2f4d files after generated in --archive mode
+# so that Processing can then load them and make pngs and pdfs
+# by changing the font family names to be distinct
+# requires ttf2eot installed 
+
+IN=ttf		# unless otherwise specified on command line
+OUT=woff	# unless otherwise specified on command line
+EXIT=1000	# total number of fonts to try
+COUNTER=0
+# SLEEP=.25
+
+
+
+# parse command line options
+
+while [ "$1" != "" ]; do
+    case $1 in
+        -i | --in )		shift
+                                IN=$1;;
+        -o | --out )		shift
+                                OUT=$1;;
+        -h | --help )           echo -e "\
+Usage: mtdbt2f-convert [OPTION]... [FILE]...
+Convert Meta-the-Difference-Between-the-2-Font files from .ttf to .woff and other formats \
+available through font forge. Run with --in ttf --out ttf to rename a series of mtdbt2f4d.
+
+  -i, --in                    input format [ttf, woff, eot] 
+  -o, --out		      output format [ttf, woff, eot]
+"
+                                exit;;
+    esac
+    shift
+done
+
+
+
+while [ $COUNTER -lt $EXIT ]; do
+
+	TRY="mtdbt2f4d-$COUNTER"
+	WRITE="mtdbt2f4d-$COUNTER"		# rename original as sequence
+	# WRITE="mtdbt2f4d"			# rename renamed sequence as sequence
+
+	if [ "$IN" == "ttf" ] && [ "$OUT" == "ttf" ] ; then
+	
+		# convert individual font names to numbered sequence
+
+		fontforge -lang=ff -c 'Open($1); \
+		SetFontNames($3,$3,$3); \
+		Generate($2)' $TRY.ttf $WRITE.ttf $WRITE
+	else
+
+		if [ "$IN" == "ttf" ] && [ "$OUT" == "eot" ] ; then
+
+			# convert to eot using ttf2eot
+			ttf2eot $TRY.ttf > $TRY.eot	
+		else
+
+			# convert from one format to another using font forge
+	
+			fontforge -lang=ff -c 'Open($1); \
+			SetFontNames($3,$3,$3); \
+			Generate($2)' $TRY.$IN $WRITE.$OUT $WRITE
+
+		fi
+	fi
+
+	let COUNTER=COUNTER+1
+	echo "counter $COUNTER"
+	echo "** $FONT ** converted."
+done
+
+

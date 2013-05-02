@@ -1,0 +1,264 @@
+#!/bin/bash
+
+# init
+
+FILE_IN=mtdbt2f4d-init.mf
+WORKINGDIRECTORY="$(pwd)"
+COUNTER=0
+STEPS=0
+KEEP=1			# 0 write over one file, 1 keep sequenced files
+ARCHIVE=0		# 0 default, 1 generate mtdbt2f4d.ttf but cp sequence to Out/
+CLEANUP=1		# 0 dont cleanup, 1 do
+QUIET=0			# 0 default, 1 dont -compile
+ARCHIVECOUNTER=0	# 0 used with COUNTER to get proper sequential filenames in --archive
+WEIGHT_MIN=50
+WEIGHT_MAX=50
+WEIGHT_STEP=0
+SLANT_MIN=0.0
+SLANT_MAX=0.0
+SLANT_STEP=0
+SUPER_MIN=.75
+SUPER_MAX=.75
+SUPER_STEP=0
+PENTYPE=0 # 0 = ellipse or 1 = rect
+PENXY_MIN=1.0 # ratio of X / Y 
+PENXY_MAX=1.0 # ratio of X / Y 
+PENXY_STEP=0
+PENR_MIN=0
+PENR_MAX=0
+PENR_STEP=0
+
+
+
+# parse command line options
+
+while [ "$1" != "" ]; do
+    case $1 in
+        -f | --file )           shift
+                                FILE_IN=$1;;
+        -c | --counter )        shift
+                                COUNTER=$1;;
+        -t | --steps )          shift
+                                STEPS=$1;;
+        -w | --weight )         shift
+                                WEIGHT_MIN=$1
+				shift
+				WEIGHT_MAX=$1;;
+        -s | --slant )          shift
+                                SLANT_MIN=$1
+                                shift
+                                SLANT_MAX=$1;;
+        -u | --super )		shift
+                                SUPER_MIN=$1
+                                shift
+                                SUPER_MAX=$1;;
+        -p | --pen )      	shift
+                                PENTYPE=$1
+                                shift
+                                PENXY_MIN=$1
+                                shift
+                                PENXY_MAX=$1
+				shift
+				PENR_MIN=$1
+				shift
+				PENR_MAX=$1;;
+	-k | --keep )		shift
+				KEEP=$1;;
+	-a | --archive )	shift
+				ARCHIVE=$1;;
+	-l | --cleanup )	shift
+				CLEANUP=$1;;
+	-q | --quiet )		shift
+				QUIET=$1;;
+        -h | --help )           shift
+				echo -e "\
+Usage: mtdbt2f-make [OPTION]... [FILE]...
+Make ordered range of Meta-the-Difference-Between-the-2-Font .mf sources within parameter limits. 
+
+  -f, --file			FILE in metafont format (.mf)
+  -c, --counter			for multiple outputs, passed from -4d
+  -t, --steps          		increments between parameter limits
+  -w, --weight		        min max [10 500]
+  -s, --slant     		min max [-2 2]
+  -u. --super			min max [.01 2.0]
+  -p, --pen      		type xy_min xy_max rotate_min rotate_max 
+  -k, --keep			[0] write over one file 
+  				[1] keep sequenced files
+  -a, --archive			[0] default 
+  				[1] generate 1 file, but cp sequenced files
+  -l, --cleanup			[0] don't cleanup files
+				[1] default
+  -q, --quiet			[0] default
+  				[1] don't -compile, output to stdout
+  -h, --help			show help
+"
+				exit;;
+    esac
+    shift
+done
+
+
+
+# random
+
+function randomWalk {	
+	# random number between 0 and 2, subtract 1 to get -1, 0, 1
+	let "RANDOMWALK = $RANDOM % 3 -1"
+	echo "randomWalk = $RANDOMWALK"
+}
+
+
+
+# set step values for each parameter
+# special case for STEPS = 0 to avoid division / zero
+
+if [ $STEPS != 0 ]; then
+
+	WEIGHT_STEP=$(echo "(($WEIGHT_MAX - $WEIGHT_MIN) / $STEPS)" | bc -l)
+	SLANT_STEP=$(echo "(($SLANT_MAX - $SLANT_MIN) / $STEPS)" | bc -l)
+	SUPER_STEP=$(echo "(($SUPER_MAX - $SUPER_MIN) / $STEPS)" | bc -l)
+	PENXY_STEP=$(echo "(($PENXY_MAX - $PENXY_MIN) / $STEPS)" | bc -l)
+	PENR_STEP=$(echo "(($PENR_MAX - $PENR_MIN) / $STEPS)" | bc -l)
+fi
+
+echo WEIGHT_STEP=$WEIGHT_STEP
+echo SLANT_STEP=$SLANT_STEP
+echo SUPER_STEP=$SUPER_STEP
+echo PENTYPE=$PENTYPE 	# no step value
+echo PENXY_STEP=$PENXY_STEP	
+echo PENR_STEP=$PENR_STEP
+echo "** initialization complete. **\r"
+
+
+
+# main
+
+# cleanup 
+	
+if [ "$CLEANUP" != "0" ]; then
+	if [ -d "Out" ]; then
+		rm Out/mtdbt2f4d*
+	else
+		mkdir Out
+	fi 
+	rm mtdbt2f4d.mf
+        rm mtdbt2f4d-[0-9]*
+fi
+
+echo -e "Welcome to Meta-the-Difference-Between-the-Two-Font. \r"
+echo -e "Today is $(date) \r"
+echo -e "*\r"
+echo -e "Current working directory is $WORKINGDIRECTORY \r" 
+echo -e "$DATE" > log.txt
+echo ""
+echo "	      SLANT   | SUPERNESS"
+echo "        	 \    |"
+echo "	          \   |"
+echo "        	   \  |"
+echo "	            \ |"
+echo "        	     \|____________ WEIGHT"
+echo ""
+echo "			PEN ===>"
+echo ""
+
+WEIGHT=$WEIGHT_MIN
+SLANT=$SLANT_MIN
+SUPER=$SUPER_MIN
+PENXY=$PENXY_MIN
+PENR=$PENR_MIN
+STEPS_COUNTER=$(echo "$STEPS + $COUNTER" | bc)
+
+while [  $COUNTER -le $STEPS_COUNTER ]; do
+
+	if [ $KEEP = "0" ]; then
+		FILENAME="mtdbt2f4d"
+	else
+		FILENAME="mtdbt2f4d-$COUNTER"
+		# FILENAME=mtdbt2f-`date "+%Y%m%d-%H%M%S"`-$COUNTER
+		# FILENAME=mtdbt2f-`date "+%s"`-$COUNTER
+	fi
+
+	# weight
+	FIND="weight:="
+	REPLACE="weight:=$WEIGHT;"
+	echo "WEIGHT=$WEIGHT"	
+
+        # slant
+        FIND2="slant:="
+        REPLACE2="slant:=$SLANT;"
+        echo "SLANT=$SLANT"
+
+        # super
+        FIND3="superness:="
+        REPLACE3="superness:=$SUPER;"
+        echo "SUPER=$SUPER"
+
+        # penType
+        FIND4="penType:="
+        REPLACE4="penType:=$PENTYPE;"
+        echo "PENTYPE=$PENTYPE"
+
+        # penX
+	PENX=$(echo "$PENXY*100" | bc -l)
+        FIND5="penX:="
+        REPLACE5="penX:=$PENX;"
+        echo "PENX=$PENX"
+
+        # penY
+	PENY=100
+        FIND6="penY:="
+        REPLACE6="penY:=$PENY;"
+        echo "PENY=$PENY"
+
+        # penR
+        FIND7="penR:="
+        REPLACE7="penR:=$PENR;"
+        echo "PENR=$PENR"
+
+	# use sed to substitute, mutiple commands in one process with -e
+	sed -e "s/^$FIND.*$/$REPLACE/" -e "s/^$FIND2.*$/$REPLACE2/" -e "s/^$FIND3.*$/$REPLACE3/" -e "s/^$FIND4.*$/$REPLACE4/" -e "s/^$FIND5.*$/$REPLACE5/" -e "s/^$FIND6.*$/$REPLACE6/" -e "s/^$FIND7.*$/$REPLACE7/"  $FILE_IN > $FILENAME.mf
+
+	# run compile script to make fonts
+	# if $FOLDERS then cp into sequenced folders
+
+        if [ "$QUIET" != "1" ]; then
+		mtdbt2f-compile $FILENAME
+		if [ "$ARCHIVE" == "1" ]; then
+			cp $FILENAME.ttf Out/$FILENAME-$COUNTER.ttf
+			mv $FILENAME.ttf Out/
+		else
+			mv $FILENAME.ttf Out/
+		fi
+	fi
+
+	# increment values
+	WEIGHT=$(echo "$WEIGHT+$WEIGHT_STEP" | bc) 
+        SLANT=$(echo "$SLANT+$SLANT_STEP" | bc) 
+        SUPER=$(echo "$SUPER+$SUPER_STEP" | bc) 
+        PENXY=$(echo "$PENXY+$PENXY_STEP" | bc) 
+        PENR=$(echo "$PENR+$PENR_STEP" | bc) 
+
+	# echo The counter is $COUNTER
+	let COUNTER=COUNTER+1 
+done
+
+# open in Fontbook or if running from -4d, then open only one at a time
+# or even dont open in Fontbook if running as --daemon or as --archive
+
+if [[ "$QUIET" != "1" && "$KEEP" != "0" && "$ARCHIVE" != "1" ]]; then
+	if [ "$STEPS" == "0" ]; then	
+		# running from -4d, open only one font at a time
+		open -a "Font Book" Out/$FILENAME.ttf
+	else
+		open -a "Font Book" Out/*
+	fi
+fi
+
+
+
+# exit
+
+echo -e "** mtdbt2f-make ok ** \r"
+echo -e "Bye."
+
+# end
