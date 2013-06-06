@@ -1,1 +1,1 @@
-* * * * * /bin/bash /usr/www/users/reinfurt/META-THE-DIFFERENCE/src/v1.1/mtdbt2f4d-src/mtdbt2f-release >> /usr/www/users/reinfurt/META-THE-DIFFERENCE/_log.txt 2>&1
+0 0 * * 0 /bin/bash /usr/www/users/reinfurt/META-THE-DIFFERENCE/src/v1.1/mtdbt2f4d-src/mtdbt2f-release >> /usr/www/users/reinfurt/META-THE-DIFFERENCE/_log.txt 2>&1
