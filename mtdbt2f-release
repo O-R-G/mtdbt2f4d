@@ -12,7 +12,6 @@ echo `date` > ~/mdate.txt
 COUNTER=0
 EXIT=521	# the total number of fonts to try
 SLEEP=5		# this if for dev only
-# RELEASED=`cat ~/public_html/META-THE-DIFFERENCE/src/v1.1/mtdbt2f4d-src/mtdbt2f4d.txt`
 RELEASED=`cat ~/public_html/META-THE-DIFFERENCE/src/mtdbt2f4d/mtdbt2f4d.txt`
 
 
