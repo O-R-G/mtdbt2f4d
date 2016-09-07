@@ -5,10 +5,11 @@
 FILEDATE="$(date +'%Y%m%d-%H%M%S')"
 WORKINGDIRECTORY="$(pwd)"
 MAGNIFICATION=1500;
-ENCODING=/usr/local/texlive/2011basic/texmf/fonts/enc/dvips/tetex/mtdbt2f.enc
+# ENCODING=/usr/local/texlive/2011basic/texmf/fonts/enc/dvips/tetex/mtdbt2f.enc
+ENCODING=/usr/local/texlive/2015basic/texmf-dist/fonts/enc/dvips/tetex/mtdbt2f.enc
 FORMAT="TTF"
 IN=$1 			# collect file from command line
-ACCENTS=1; 		# [0] absolute (default) or [1] relative position for accents 
+ACCENTS=0; 		# [0] absolute (default) or [1] relative position for accents 
 WEIGHTNAME='Regular';
 COPYRIGHT='Dexter-Sinister...Meta-the-Difference-Between-the-2-Font...based-on-MetaFont-original-geometry-by-Donald-Knuth-and-Anthony-Phan.';
 VERSION='v1.1-2013'; 

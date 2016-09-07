@@ -95,7 +95,7 @@ while [ "$1" != "" ]; do
         -k | --keep )           shift
                                 KEEP=$1;;
         -a | --archive )        shift
-	THIS_MEAN = `echo "($3 - $2) / 2" | bc -l`
+				THIS_MEAN = `echo "($3 - $2) / 2" | bc -l`
                                 ARCHIVE=$1;;
         -d | --daemon )		shift
                                 DAEMON=$1;;

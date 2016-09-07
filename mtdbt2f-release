@@ -1,7 +1,5 @@
 #!/bin/bash
 
-echo `date` > ~/mdate.txt
-
 # this is used to check on next candidate for release
 # read first from text file of last known release
 # then try if the next file exists --
@@ -12,15 +10,11 @@ echo `date` > ~/mdate.txt
 COUNTER=0
 EXIT=521	# the total number of fonts to try
 SLEEP=5		# this if for dev only
-RELEASED=`cat ~/public_html/META-THE-DIFFERENCE/src/mtdbt2f4d/mtdbt2f4d.txt`
-
-
+RELEASED=`cat ~/mtdbt2f4d-src/mtdbt2f4d.txt`
 
 # unpack archive
 # does not work in cron
-# unzip -q -P mtdbt2f4d -d ~/public_html/META-THE-DIFFERENCE/src/mtdbt2f4d/ ~/public_html/META-THE-DIFFERENCE/src/mtdbt2f4d/src.zip
-
-
+unzip -q -P mtdbt2f4d -d ~/mtdbt2f4d-src/ ~/mtdbt2f4d-src/src.zip
 
 # main
 
@@ -32,35 +26,34 @@ fi
 
 while [ $COUNTER -lt $EXIT ]; do
 
-	if [ -f ~/public_html/META-THE-DIFFERENCE/src/mtdbt2f4d/.ttf/mtdbt2f4d-$CANDIDATE.ttf ]; then
+	if [ -f ~/mtdbt2f4d-src/.ttf/mtdbt2f4d-$CANDIDATE.ttf ]; then
 
-		echo $CANDIDATE > ~/public_html/META-THE-DIFFERENCE/src/mtdbt2f4d/mtdbt2f4d.txt
+		echo $CANDIDATE > ~/mtdbt2f4d-src/mtdbt2f4d.txt
 		echo "** mtdbt2f4d-$CANDIDATE.ttf ** released."
 
 		# backup
-		cp ~/public_html/META-THE-DIFFERENCE/out/kadist/pdf/mtdbt2f4d.pdf ~/public_html/META-THE-DIFFERENCE/out/kadist/pdf/mtdbt2f4d-$RELEASED.pdf
-		cp ~/public_html/META-THE-DIFFERENCE/out/kadist/png/mtdbt2f4d.png ~/public_html/META-THE-DIFFERENCE/out/kadist/png/mtdbt2f4d-$RELEASED.png
-		cp ~/public_html/META-THE-DIFFERENCE/out/kadist/ttf/mtdbt2f4d.ttf ~/public_html/META-THE-DIFFERENCE/out/kadist/ttf/mtdbt2f4d-$RELEASED.ttf
-		cp ~/public_html/META-THE-DIFFERENCE/out/kadist/eot/mtdbt2f4d.eot ~/public_html/META-THE-DIFFERENCE/out/kadist/eot/mtdbt2f4d-$RELEASED.eot
-		cp ~/public_html/META-THE-DIFFERENCE/out/kadist/woff/mtdbt2f4d.woff ~/public_html/META-THE-DIFFERENCE/out/kadist/woff/mtdbt2f4d-$RELEASED.woff
+		cp ~/public_html/drupal/sites/kadist.org/files/mtdbt2f4d/pdf/mtdbt2f4d.pdf ~/public_html/drupal/sites/kadist.org/files/mtdbt2f4d/pdf/mtdbt2f4d-$RELEASED.pdf
+		cp ~/public_html/drupal/sites/kadist.org/files/mtdbt2f4d/png/mtdbt2f4d.png ~/public_html/drupal/sites/kadist.org/files/mtdbt2f4d/png/mtdbt2f4d-$RELEASED.png
+		cp ~/public_html/drupal/sites/kadist.org/files/mtdbt2f4d/ttf/mtdbt2f4d.ttf ~/public_html/drupal/sites/kadist.org/files/mtdbt2f4d/ttf/mtdbt2f4d-$RELEASED.ttf
+		cp ~/public_html/drupal/sites/kadist.org/files/mtdbt2f4d/eot/mtdbt2f4d.eot ~/public_html/drupal/sites/kadist.org/files/mtdbt2f4d/eot/mtdbt2f4d-$RELEASED.eot
+		cp ~/public_html/drupal/sites/kadist.org/files/mtdbt2f4d/woff/mtdbt2f4d.woff ~/public_html/drupal/sites/kadist.org/files/mtdbt2f4d/woff/mtdbt2f4d-$RELEASED.woff
 
 		# install
-		cp ~/public_html/META-THE-DIFFERENCE/src/mtdbt2f4d/.pdf/mtdbt2f4d-$CANDIDATE.pdf ~/public_html/META-THE-DIFFERENCE/out/kadist/pdf/mtdbt2f4d.pdf
-		cp ~/public_html/META-THE-DIFFERENCE/src/mtdbt2f4d/.png/mtdbt2f4d-$CANDIDATE.png ~/public_html/META-THE-DIFFERENCE/out/kadist/png/mtdbt2f4d.png
-		cp ~/public_html/META-THE-DIFFERENCE/src/mtdbt2f4d/.ttf/mtdbt2f4d-$CANDIDATE.ttf ~/public_html/META-THE-DIFFERENCE/out/kadist/ttf/mtdbt2f4d.ttf
-		cp ~/public_html/META-THE-DIFFERENCE/src/mtdbt2f4d/.eot/mtdbt2f4d-$CANDIDATE.eot ~/public_html/META-THE-DIFFERENCE/out/kadist/eot/mtdbt2f4d.eot
-		cp ~/public_html/META-THE-DIFFERENCE/src/mtdbt2f4d/.woff/mtdbt2f4d-$CANDIDATE.woff ~/public_html/META-THE-DIFFERENCE/out/kadist/woff/mtdbt2f4d.woff
-		
-		# cp ~/public_html/META-THE-DIFFERENCE/src/mtdbt2f4d/.ttf/mtdbt2f4d-$CANDIDATE.ttf ~/www/sites/all/themes/gui/kadist/css/metafont/metafont-webfont/mtdbt2f4d.ttf
-		# cp ~/public_html/META-THE-DIFFERENCE/src/mtdbt2f4d/.eot/mtdbt2f4d-$CANDIDATE.eot ~/www/sites/all/themes/gui/kadist/css/metafont/metafont-webfont/mtdbt2f4d.eot
-		# cp ~/public_html/META-THE-DIFFERENCE/src/mtdbt2f4d/.woff/mtdbt2f4d-$CANDIDATE.woff ~/www/sites/all/themes/gui/kadist/css/metafont/metafont-webfont/mtdbt2f4d.woff
+		cp ~/mtdbt2f4d-src/.pdf/mtdbt2f4d-$CANDIDATE.pdf ~/public_html/drupal/sites/kadist.org/files/mtdbt2f4d/pdf/mtdbt2f4d.pdf
+		cp ~/mtdbt2f4d-src/.png/mtdbt2f4d-$CANDIDATE.png ~/public_html/drupal/sites/kadist.org/files/mtdbt2f4d/png/mtdbt2f4d.png
+		cp ~/mtdbt2f4d-src/.ttf/mtdbt2f4d-$CANDIDATE.ttf ~/public_html/drupal/sites/kadist.org/files/mtdbt2f4d/ttf/mtdbt2f4d.ttf
+		cp ~/mtdbt2f4d-src/.eot/mtdbt2f4d-$CANDIDATE.eot ~/public_html/drupal/sites/kadist.org/files/mtdbt2f4d/eot/mtdbt2f4d.eot
+		cp ~/mtdbt2f4d-src/.woff/mtdbt2f4d-$CANDIDATE.woff ~/public_html/drupal/sites/kadist.org/files/mtdbt2f4d/woff/mtdbt2f4d.woff
+		cp ~/mtdbt2f4d-src/.ttf/mtdbt2f4d-$CANDIDATE.ttf ~/www/drupal/sites/all/themes/gui/kadist/css/metafont/metafont-webfont/mtdbt2f4d.ttf
+		cp ~/mtdbt2f4d-src/.eot/mtdbt2f4d-$CANDIDATE.eot ~/www/drupal/sites/all/themes/gui/kadist/css/metafont/metafont-webfont/mtdbt2f4d.eot
+		cp ~/mtdbt2f4d-src/.woff/mtdbt2f4d-$CANDIDATE.woff ~/www/drupal/sites/all/themes/gui/kadist/css/metafont/metafont-webfont/mtdbt2f4d.woff
 
 		# public url
-		# http://www.kadist.org/sites/kadist.org/files/mtdbt2f4d/pdf/mtdbt2f4d.pdf
-		# http://www.kadist.org/sites/kadist.org/files/mtdbt2f4d/png/mtdbt2f4d.png
-		# http://www.kadist.org/sites/kadist.org/files/mtdbt2f4d/ttf/mtdbt2f4d.ttf
-		# http://www.kadist.org/sites/kadist.org/files/mtdbt2f4d/eot/mtdbt2f4d.eot
-		# http://www.kadist.org/sites/kadist.org/files/mtdbt2f4d/woff/mtdbt2f4d.woff
+		# http://temp.kadist.org/sites/kadist.org/files/mtdbt2f4d/pdf/mtdbt2f4d.pdf
+		# http://temp.kadist.org/sites/kadist.org/files/mtdbt2f4d/png/mtdbt2f4d.png
+		# http://temp.kadist.org/sites/kadist.org/files/mtdbt2f4d/ttf/mtdbt2f4d.ttf
+		# http://temp.kadist.org/sites/kadist.org/files/mtdbt2f4d/eot/mtdbt2f4d.eot
+		# http://temp.kadist.org/sites/kadist.org/files/mtdbt2f4d/woff/mtdbt2f4d.woff
 
 		break
 	else
@@ -75,11 +68,11 @@ done
 
 # cleanup
 
-# rm -r ~/public_html/META-THE-DIFFERENCE/src/mtdbt2f4d/.pdf
-# rm -r ~/public_html/META-THE-DIFFERENCE/src/mtdbt2f4d/.png
-# rm -r ~/public_html/META-THE-DIFFERENCE/src/mtdbt2f4d/.ttf
-# rm -r ~/public_html/META-THE-DIFFERENCE/src/mtdbt2f4d/.eot
-# rm -r ~/public_html/META-THE-DIFFERENCE/src/mtdbt2f4d/.woff
+rm -r ~/mtdbt2f4d-src/.pdf
+rm -r ~/mtdbt2f4d-src/.png
+rm -r ~/mtdbt2f4d-src/.ttf
+rm -r ~/mtdbt2f4d-src/.eot
+rm -r ~/mtdbt2f4d-src/.woff
 
 # date and done
 
