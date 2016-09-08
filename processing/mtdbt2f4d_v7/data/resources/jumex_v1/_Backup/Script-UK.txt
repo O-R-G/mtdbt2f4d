@@ -1,0 +1,332 @@
+
+8
+7
+6
+5
+4
+3
+2
+
+LETTER & SPIRIT
+
+This is the story
+of the font you’re reading
+right *now*.
+Made by Dexter Sinister in 2012,
+the type draws on 500 years
+of thinking about the alphabet,
+which is compressed here 
+and retold in three parts.
+
+I. Font
+
+The history of typography 
+is marked by a persistent drive
+to rationalize 
+the shapes of letters.
+Moveable metal type 
+arrived in the 15th century,
+its forms modelled on handwriting. 
+More deliberately constructed alphabets
+soon appeared –
+letters of divine proportion,
+humanist forms, 
+e.g.,
+this one from Albrecht Dürer in 1525:
+
+But the first to apply 
+such rational impulses 
+to properly technical ends
+was the Romain du Roi, 
+or ‘King’s Roman’.
+Commissioned by Louis XIV 
+in the 17th century, 
+these letters imposed
+a mathematically-rigorous structure 
+on forms that had, until now, 
+developed organically.
+Designed by
+‘a royal committee
+of philosophers and technologists’,
+the Romain du Roi was plotted on a grid,
+printed as a set of instructions, 
+and cut into punches
+to make metal type.
+
+150 years later,
+Herbert Bayer’s Universal Alphabet
+was a pared-down sans-serif font 
+whose letters mirror the tools 
+that drew them:
+ruler, 
+T-square, 
+set square, 
+compass and protractor.
+
+About the same time, 
+Stanley Morison was busy 
+redesigning the house typeface 
+of London’s principal newspaper, 
+THE TIMES. 
+What became Times New Roman
+was neither redrawn from scratch 
+nor adjusted from existing fonts, 
+but rather *amalgamated* 
+from a number of different typefaces 
+made at various points 
+over the previous half-millennium.
+
+Letterforms are usually the product
+of a single designer
+at a particular point in time, 
+but Times New Roman 
+was the bastard offspring 
+of MANY designers 
+working ACROSS time.
+More recently, 
+Adrian Frutiger’s Univers
+took the rational mapping 
+of the Romain du Roi 
+to another plateau.
+Univers is an extended family
+whose standard variants
+(regular, italic, bold ...) 
+were expanded seven-fold.
+The family 
+was conceptually housed 
+in a two-dimensional matrix:
+
+the X-axis 
+charts WIDTH
+while the Y-axis 
+charts WEIGHT.
+It could procreate in any direction 
+*ad infinitum*
+– and it has,
+growing from 21 to 63 types
+before being re-issued as
+Univers Next.
+*
+II. Metafont
+
+In 1979,
+Stanford professor Donald Knuth 
+extended this idea of infinite extension
+with his software, ‘Metafont’.
+The computer program let users 
+generate unlimited numbers of fonts
+by controlling a limited set
+of set parameters.
+
+Metafont was created
+to harness the essential ‘intelligence’
+of letterforms.
+In Knuth’s view,
+the way a single letter is drawn
+(an a priori ‘A’, say)
+presupposes and informs 
+all the other letters in the same font.
+This information can be 
+isolated, 
+turned into a set of instructions, 
+and put to work 
+making the other letters
+by filling in the features 
+between a number of variables 
+such as 
+WEIGHT 
+or 
+SLANT.
+
+Professor Knuth not only 
+wrote the computer program,
+he also wrote
+*about* his computer program 
+in the design journal
+VISIBLE LANGUAGE.
+
+Fellow Mathematician
+Douglas Hofstadter
+read this article and responded 
+with one of his own.
+
+While charmed by Knuth’s thesis, 
+Hofstadter disputed his colleague’s claim 
+that the shape of any letter 
+is ‘mathematically containable’.
+He writes,
+‘Clearly there is much more 
+going on in typefaces 
+than meets the eye.
+Underneath or behind 
+each instance of “A”
+there lurks a concept, 
+a Platonic entity, 
+a spirit’.
+
+Hofstadter builds his argument 
+on the distinction between
+‘the letter of the law’
+v. 
+‘the spirit of the law’. 
+It’s a familiar premise 
+that pits 
+‘a set of set rules’
+against 
+‘a fluid set of principles’.
+Our legal system is based on it –
+judges work from precedent 
+but also map uncharted territory 
+by bringing the full range 
+of their experience to bear 
+on each specific case. 
+In this way, 
+the law *itself* evolves.
+Similarly, 
+Hofstadter suggests replacing 
+Knuth’s ur-‘A’ FORM
+with an even higher-level abstraction, 
+an ur-‘A’ ESSENCE.
+This ‘essence’
+extends beyond a Platonic shape, 
+allowing for the idea of 
+*what constitutes an ‘A’* 
+to change too.
+He concludes:
+‘Each instance of the “A” spirit 
+reveals something new 
+about the spirit 
+without ever exhausting it’.
+*
+III. Meta-the-difference-between-the-two-font
+
+Donald Knuth noted his preoccupation
+with designing meta-level instructions 
+instead of individual letters,
+as typical of a contemporary inclination
+to view things ‘from the outside
+at a more abstract level,
+with what we feel is 
+a more mature understanding’.
+From this elevated vantage, 
+Metafont was set up to oversee
+not the specific letter shapes 
+but rather 
+‘how the letters would change 
+in different circumstances’.
+This font –
+the one you’re reading right *now* –
+picks up where Knuth’s left off. 
+The only real difference between the two
+is that the new software 
+that *generates* these letters 
+and *is* these letters
+was re-scripted to run 
+on contemporary computers. 
+It is
+(more or less)
+the same as Metafont, 
+abiding the fact 
+that it swallows its predecessor. 
+The result may *look* the same 
+but clearly it can’t be
+because in addition to the original code, 
+the new version also embeds 
+its ‘intellectual’ backstory.
+Sure, 
+it’s a tool to produce endless PostScript fonts, 
+but it’s *at least equally* 
+a tool to think 
+*around and about* Metafont, 
+to chase after
+the intelligence of an alphabet, 
+and yield new insights into 
+the elusive SPIRITS 
+that flit about so tantalizingly, 
+hidden just behind those lovely shapes
+we call LETTERS.
+
+How to keep things moving?
+Metafont was originally designed
+to generate an infinite number of fonts
+by tweaking a few simple parameters
+at different points in time.
+But what if we make 
+one of those parameters
+*time* itself ?
+...
+Imagine a 3-dimensional space 
+of possible values:
+
+Run
+WEIGHT
+(a kind of bold)	
+along the X-axis, 
+SLANT
+(more or less italic)
+up the Y, and 
+SUPERNESS
+(a kind of chutzpah) 
+off into the Z beyond. 
+A fourth parameter, 
+PEN
+is best thought of 
+as a flexing digital ‘nib’
+that determines the stroke’s shape and angle
+at any given point.
+Now let’s send that point 
+*constantly moving* 
+through this imaginary cube:
+
+As it wanders randomly
+it trails a script 
+that renders an alphabet
+which morphs according to 
+its current position in the cube.
+It all adds up
+to a typographic oxymoron: 
+a SINGLE typeface 
+that’s simultaneously MANY typefaces 
+and never stops moving.
+The result is this:
+A
+B
+C
+D
+E
+F
+G
+H
+I
+J
+K
+L
+M
+N
+O
+P
+Q
+R
+S
+T
+U
+V
+W
+X
+Y
+Z 
+Meta-the-difference-between-the-two-font-4-D
+*
+P.S. 
+The first small script
+typically produced by a computer programmer
+when learning a new language
+writes two words that mark the border
+between instruction & instance,
+between code & product,
+between spirit & letter.
+Swaddled in asterisks 
+and set without a full point,
+this text reads:
+** Hello, world **
+ 
