@@ -4,24 +4,6 @@
 
 EXTENSION=".mf"
 
-
-# parse command line options
-
-while [ "$1" != "" ]; do
-    case $1 in
-        -h | --help )           echo -e "\
-Usage: mtdbt2f-compile-helper [STDIN]
-Compile multiple Meta-the-Difference-Between-the-2-Font files as .ttf from .mf sources as specified on stdin (wildcards ok).
-
-  [STDIN]               FILES specified on stdin with wildcard in metafont format (.mf)
-  -h, --help            show help
-"
-                                exit;;
-    esac
-    shift
-done
-
-
 # strip .mf and iterate over stdin
 
 for FILE in "$@"
