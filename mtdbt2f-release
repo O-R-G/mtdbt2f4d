@@ -18,6 +18,7 @@ RELEASED=$(cat mtdbt2f4d.txt)	# more robust
 # configuration
 										# quotes to avoid file disasters (*,.,etc.)
 LOCAL="."									# use . for relative, or specify
+STAGE="/usr/www/users/reinfurt/META-THE-DIFFERENCE/out/kadist"				# on meta-the-difference.com
 REMOTE="~/public_html/drupal/sites/kadist.org/files/mtdbt2f4d"			# public www server distrubution
 LIVE="~/www/drupal/sites/all/themes/gui/kadist/css/metafont/metafont-webfont"	# live www deployment
 
@@ -40,19 +41,19 @@ while [ $COUNTER -lt $EXIT ]; do
 		echo $CANDIDATE > "$LOCAL"/mtdbt2f4d.txt
 		echo "** mtdbt2f4d-$CANDIDATE.ttf ** released."
 
-		# backup local
-		cp "$LOCAL"/pdf/mtdbt2f4d.pdf "$LOCAL"/pdf/mtdbt2f4d-$RELEASED.pdf
-		cp "$LOCAL"/png/mtdbt2f4d.png "$LOCAL"/png/mtdbt2f4d-$RELEASED.png
-		cp "$LOCAL"/ttf/mtdbt2f4d.ttf "$LOCAL"/ttf/mtdbt2f4d-$RELEASED.ttf
-		cp "$LOCAL"/eot/mtdbt2f4d.eot "$LOCAL"/eot/mtdbt2f4d-$RELEASED.eot
-		cp "$LOCAL"/woff/mtdbt2f4d.woff "$LOCAL"/woff/mtdbt2f4d-$RELEASED.woff
+		# backup stage
+		cp "$STAGE"/pdf/mtdbt2f4d.pdf "$STAGE"/pdf/mtdbt2f4d-$RELEASED.pdf
+		cp "$STAGE"/png/mtdbt2f4d.png "$STAGE"/png/mtdbt2f4d-$RELEASED.png
+		cp "$STAGE"/ttf/mtdbt2f4d.ttf "$STAGE"/ttf/mtdbt2f4d-$RELEASED.ttf
+		cp "$STAGE"/eot/mtdbt2f4d.eot "$STAGE"/eot/mtdbt2f4d-$RELEASED.eot
+		cp "$STAGE"/woff/mtdbt2f4d.woff "$STAGE"/woff/mtdbt2f4d-$RELEASED.woff
 
-		# install local
-		cp "$LOCAL"/.pdf/mtdbt2f4d-$CANDIDATE.pdf "$LOCAL"/pdf/mtdbt2f4d.pdf
-		cp "$LOCAL"/.png/mtdbt2f4d-$CANDIDATE.png "$LOCAL"/png/mtdbt2f4d.png
-		cp "$LOCAL"/.ttf/mtdbt2f4d-$CANDIDATE.ttf "$LOCAL"/ttf/mtdbt2f4d.ttf
-		cp "$LOCAL"/.eot/mtdbt2f4d-$CANDIDATE.eot "$LOCAL"/eot/mtdbt2f4d.eot
-		cp "$LOCAL"/.woff/mtdbt2f4d-$CANDIDATE.woff "$LOCAL"/woff/mtdbt2f4d.woff
+		# install stage
+		cp "$LOCAL"/.pdf/mtdbt2f4d-$CANDIDATE.pdf "$STAGE"/pdf/mtdbt2f4d.pdf
+		cp "$LOCAL"/.png/mtdbt2f4d-$CANDIDATE.png "$STAGE"/png/mtdbt2f4d.png
+		cp "$LOCAL"/.ttf/mtdbt2f4d-$CANDIDATE.ttf "$STAGE"/ttf/mtdbt2f4d.ttf
+		cp "$LOCAL"/.eot/mtdbt2f4d-$CANDIDATE.eot "$STAGE"/eot/mtdbt2f4d.eot
+		cp "$LOCAL"/.woff/mtdbt2f4d-$CANDIDATE.woff "$STAGE"/woff/mtdbt2f4d.woff
 
 		# backup remote
 		cp "$REMOTE"/pdf/mtdbt2f4d.pdf "$REMOTE"/pdf/mtdbt2f4d-$RELEASED.pdf
