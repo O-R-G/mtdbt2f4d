@@ -18,9 +18,9 @@ RELEASED=$(cat mtdbt2f4d.txt)	# more robust
 # configuration
 										# quotes to avoid file disasters (*,.,etc.)
 LOCAL="."									# use . for relative, or specify
-STAGE="/usr/www/users/reinfurt/META-THE-DIFFERENCE/out/kadist"				# on meta-the-difference.com
-REMOTE="~/public_html/drupal/sites/kadist.org/files/mtdbt2f4d"			# public www server distrubution
-LIVE="~/www/drupal/sites/all/themes/gui/kadist/css/metafont/metafont-webfont"	# live www deployment
+STAGE="/usr/www/users/reinfurt/META-THE-DIFFERENCE/out/kadist"			# on meta-the-difference.com
+#REMOTE="~/public_html/drupal/sites/kadist.org/files/mtdbt2f4d"			# public www server distrubution
+#LIVE="~/www/drupal/sites/all/themes/gui/kadist/css/metafont/metafont-webfont"	# live www deployment
 
 # unpack archive
 # does not work in cron
@@ -55,24 +55,27 @@ while [ $COUNTER -lt $EXIT ]; do
 		cp "$LOCAL"/.eot/mtdbt2f4d-$CANDIDATE.eot "$STAGE"/eot/mtdbt2f4d.eot
 		cp "$LOCAL"/.woff/mtdbt2f4d-$CANDIDATE.woff "$STAGE"/woff/mtdbt2f4d.woff
 
-		# backup remote
-		cp "$REMOTE"/pdf/mtdbt2f4d.pdf "$REMOTE"/pdf/mtdbt2f4d-$RELEASED.pdf
-		cp "$REMOTE"/png/mtdbt2f4d.png "$REMOTE"/png/mtdbt2f4d-$RELEASED.png
-		cp "$REMOTE"/ttf/mtdbt2f4d.ttf "$REMOTE"/ttf/mtdbt2f4d-$RELEASED.ttf
-		cp "$REMOTE"/eot/mtdbt2f4d.eot "$REMOTE"/eot/mtdbt2f4d-$RELEASED.eot
-		cp "$REMOTE"/woff/mtdbt2f4d.woff "$REMOTE"/woff/mtdbt2f4d-$RELEASED.woff
+		if [[ "$REMOTE" ]]; then
 
-		# install remote
-		cp "$LOCAL"/.pdf/mtdbt2f4d-$CANDIDATE.pdf "$REMOTE"/pdf/mtdbt2f4d.pdf
-		cp "$LOCAL"/.png/mtdbt2f4d-$CANDIDATE.png "$REMOTE"/png/mtdbt2f4d.png
-		cp "$LOCAL"/.ttf/mtdbt2f4d-$CANDIDATE.ttf "$REMOTE"/ttf/mtdbt2f4d.ttf
-		cp "$LOCAL"/.eot/mtdbt2f4d-$CANDIDATE.eot "$REMOTE"/eot/mtdbt2f4d.eot
-		cp "$LOCAL"/.woff/mtdbt2f4d-$CANDIDATE.woff "$REMOTE"/woff/mtdbt2f4d.woff
+			# backup remote
+			cp "$REMOTE"/pdf/mtdbt2f4d.pdf "$REMOTE"/pdf/mtdbt2f4d-$RELEASED.pdf
+			cp "$REMOTE"/png/mtdbt2f4d.png "$REMOTE"/png/mtdbt2f4d-$RELEASED.png
+			cp "$REMOTE"/ttf/mtdbt2f4d.ttf "$REMOTE"/ttf/mtdbt2f4d-$RELEASED.ttf
+			cp "$REMOTE"/eot/mtdbt2f4d.eot "$REMOTE"/eot/mtdbt2f4d-$RELEASED.eot
+			cp "$REMOTE"/woff/mtdbt2f4d.woff "$REMOTE"/woff/mtdbt2f4d-$RELEASED.woff
+
+			# install remote
+			cp "$LOCAL"/.pdf/mtdbt2f4d-$CANDIDATE.pdf "$REMOTE"/pdf/mtdbt2f4d.pdf
+			cp "$LOCAL"/.png/mtdbt2f4d-$CANDIDATE.png "$REMOTE"/png/mtdbt2f4d.png
+			cp "$LOCAL"/.ttf/mtdbt2f4d-$CANDIDATE.ttf "$REMOTE"/ttf/mtdbt2f4d.ttf
+			cp "$LOCAL"/.eot/mtdbt2f4d-$CANDIDATE.eot "$REMOTE"/eot/mtdbt2f4d.eot
+			cp "$LOCAL"/.woff/mtdbt2f4d-$CANDIDATE.woff "$REMOTE"/woff/mtdbt2f4d.woff
 		
-		# install live
-		cp "$LOCAL"/.ttf/mtdbt2f4d-$CANDIDATE.ttf "$LIVE"/mtdbt2f4d.ttf
-		cp "$LOCAL"/.eot/mtdbt2f4d-$CANDIDATE.eot "$LIVE"/mtdbt2f4d.eot
-		cp "$LOCAL"/.woff/mtdbt2f4d-$CANDIDATE.woff "$LIVE"/mtdbt2f4d.woff
+			# install live
+			cp "$LOCAL"/.ttf/mtdbt2f4d-$CANDIDATE.ttf "$LIVE"/mtdbt2f4d.ttf
+			cp "$LOCAL"/.eot/mtdbt2f4d-$CANDIDATE.eot "$LIVE"/mtdbt2f4d.eot
+			cp "$LOCAL"/.woff/mtdbt2f4d-$CANDIDATE.woff "$LIVE"/mtdbt2f4d.woff
+		fi
 
 		# public urls
 		# http://meta-the-difference.com/out/kadist/pdf/mtdbt2f4d.pdf
