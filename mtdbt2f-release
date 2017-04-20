@@ -17,14 +17,14 @@ RELEASED=$(cat mtdbt2f4d.txt)	# more robust
 
 # configuration
 										# quotes to avoid file disasters (*,.,etc.)
-LOCAL="."									# use . for relative, or specify
+LOCAL="/usr/www/users/reinfurt/META-THE-DIFFERENCE/src/mtdbt2f4d"		# where this script runs
 STAGE="/usr/www/users/reinfurt/META-THE-DIFFERENCE/out/kadist"			# on meta-the-difference.com
 #REMOTE="~/public_html/drupal/sites/kadist.org/files/mtdbt2f4d"			# public www server distrubution
 #LIVE="~/www/drupal/sites/all/themes/gui/kadist/css/metafont/metafont-webfont"	# live www deployment
 
 # unpack archive
 # does not work in cron
-unzip -q -P mtdbt2f4d -d "$LOCAL" src.zip
+unzip -q -P mtdbt2f4d -d "$LOCAL" "$LOCAL"/src.zip
 
 # main
 
