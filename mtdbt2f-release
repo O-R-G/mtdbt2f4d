@@ -13,7 +13,6 @@
 COUNTER=0
 EXIT=521			# the total number of fonts to try
 SLEEP=5				# this if for dev only
-RELEASED=$(cat mtdbt2f4d.txt)	# more robust
 
 # configuration
 										# quotes to avoid file disasters (*,.,etc.)
@@ -21,6 +20,8 @@ LOCAL="/usr/www/users/reinfurt/META-THE-DIFFERENCE/src/mtdbt2f4d"		# where this 
 STAGE="/usr/www/users/reinfurt/META-THE-DIFFERENCE/out/kadist"			# on meta-the-difference.com
 #REMOTE="~/public_html/drupal/sites/kadist.org/files/mtdbt2f4d"			# public www server distrubution
 #LIVE="~/www/drupal/sites/all/themes/gui/kadist/css/metafont/metafont-webfont"	# live www deployment
+
+RELEASED=$(cat $LOCAL/mtdbt2f4d.txt)						# more robust
 
 # unpack archive
 # does not work in cron
