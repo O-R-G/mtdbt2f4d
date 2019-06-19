@@ -2,7 +2,7 @@
 
 # init
 
-FILE_IN=mtdbt2f4d-init.mf
+FILE_IN=mtdbt2f4d-init.mf   # default
 WORKINGDIRECTORY="$(pwd)"
 COUNTER=0
 STEPS=0
@@ -77,8 +77,8 @@ Make ordered range of Meta-the-Difference-Between-the-2-Font .mf sources within 
 
   -f, --file			FILE in metafont format (.mf)
   -c, --counter			for multiple outputs, passed from -4d
-  -t, --steps          		increments between parameter limits
-  -w, --weight		        min max [10 500]
+  -t, --steps          	increments between parameter limits
+  -w, --weight          min max [10 500]
   -s, --slant     		min max [-2 2]
   -u. --super			min max [.01 2.0]
   -p, --pen      		type xy_min xy_max rotate_min rotate_max 
@@ -109,6 +109,18 @@ function randomWalk {
 
 
 
+# init
+
+# set BASENAME from FILE_IN
+# use IFS (internal field separator) to split on '-'
+# set IFS back to default when done
+# read needs more than one var to split on IFS, hence $NOTHING
+
+IFS_DEFAULT=$IFS
+IFS=-
+read BASENAME NOTHING <<< "$FILE_IN"
+IFS=$IFS_DEFAULT
+
 # set step values for each parameter
 # special case for STEPS = 0 to avoid division / zero
 
@@ -121,13 +133,15 @@ if [ $STEPS != 0 ]; then
 	PENR_STEP=$(echo "(($PENR_MAX - $PENR_MIN) / $STEPS)" | bc -l)
 fi
 
+echo BASENAME=$BASENAME
 echo WEIGHT_STEP=$WEIGHT_STEP
 echo SLANT_STEP=$SLANT_STEP
 echo SUPER_STEP=$SUPER_STEP
 echo PENTYPE=$PENTYPE 	# no step value
 echo PENXY_STEP=$PENXY_STEP	
 echo PENR_STEP=$PENR_STEP
-echo "** initialization complete. **\r"
+
+echo $'** initialization complete. **\r'
 
 
 
@@ -137,12 +151,15 @@ echo "** initialization complete. **\r"
 	
 if [ "$CLEANUP" != "0" ]; then
 	if [ -d "Out" ]; then
-		rm Out/mtdbt2f4d*
+		# rm Out/mtdbt2f4d*
+		rm Out/$BASENAME*
 	else
 		mkdir Out
 	fi 
-	rm mtdbt2f4d.mf
-        rm mtdbt2f4d-[0-9]*
+	# rm mtdbt2f4d.mf
+    # rm mtdbt2f4d-[0-9]*
+	rm $BASENAME.mf
+    rm $BASENAME-[0-9]*
 fi
 
 echo -e "Welcome to Meta-the-Difference-Between-the-Two-Font. \r"
@@ -171,11 +188,13 @@ STEPS_COUNTER=$(echo "$STEPS + $COUNTER" | bc)
 while [  $COUNTER -le $STEPS_COUNTER ]; do
 
 	if [ $KEEP = "0" ]; then
-		FILENAME="mtdbt2f4d"
+		# FILENAME="mtdbt2f4d"
+		FILENAME=$BASENAME
 	else
-		FILENAME="mtdbt2f4d-$COUNTER"
+		# FILENAME="mtdbt2f4d-$COUNTER"
 		# FILENAME=mtdbt2f-`date "+%Y%m%d-%H%M%S"`-$COUNTER
 		# FILENAME=mtdbt2f-`date "+%s"`-$COUNTER
+ 		FILENAME="$BASENAME-$COUNTER"
 	fi
 
 	# weight
@@ -199,13 +218,13 @@ while [  $COUNTER -le $STEPS_COUNTER ]; do
         echo "PENTYPE=$PENTYPE"
 
         # penX
-	PENX=$(echo "$PENXY*100" | bc -l)
+	    PENX=$(echo "$PENXY*100" | bc -l)
         FIND5="penX:="
         REPLACE5="penX:=$PENX;"
         echo "PENX=$PENX"
 
         # penY
-	PENY=100
+	    PENY=100
         FIND6="penY:="
         REPLACE6="penY:=$PENY;"
         echo "PENY=$PENY"
