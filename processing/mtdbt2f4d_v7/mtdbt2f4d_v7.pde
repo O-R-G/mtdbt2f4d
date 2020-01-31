@@ -27,20 +27,20 @@ VideoExport videoExport;
 
 // modes 
 
-boolean playback = true;  // playback mode, line by line from Script.txt using spacebar
+boolean playback = false;  // playback mode, line by line from Script.txt using spacebar
 boolean playbackAuto = false;  // playback mode, automatic timing between lines, no spacebar
-boolean playbackCues = true;  // playback mode, from Script.txt using Cues.txt for timing
+boolean playbackCues = false;  // playback mode, from Script.txt using Cues.txt for timing
 boolean recordCues = false; // using Printwriter, record counter values as cue points
 boolean editCues = false; // using Printwriter, read in Cues.txt and live edit ('[' and ']') when paused, then write out on exit(); triggered by typing "e"
 boolean playbackFonts = false;  // playback mode, using Fonts.txt for font change cue points
 boolean generateMTDBT2F4Dspecimen = false; // generate MTDBT2F4D type specimen mov
-boolean useVideoExport = true; // use Video Export library realtime ffmpeg output
+boolean useVideoExport = false; // use Video Export library realtime ffmpeg output
 
 // options 
 
 boolean debug = false;
 boolean displayCues = false; // show counter values onscreen during playbackCues
-boolean outputQT = true; // using video library, write out to Quicktime mov
+boolean outputQT = false; // using video library, write out to Quicktime mov
 boolean outputRender = false; // output in non-real time (faster ... delaySpeed=0)
 boolean output24fps = false; // adjust timing cues to render for film at 24fps as PDF (Chaumont)
 boolean outputPDF = false; // using PDF library, write a sequence of pdf files
@@ -53,7 +53,10 @@ boolean showFrames = false; // show jumex monitor frames
 String MTDBT2F4Dspecimen = "Meta-the-difference-between-the-two-font-4-d"; // Cwm-fjord-bank glyphs vext quiz. KADIST
 String displayHollowsTrigger = "Meta-the-difference-between-the-two-font-4-d"; // " [Meta-the-difference-between-the-two-font-4-D] magic phrase that turns on hollows display
 // String displayHollowsTrigger = "----"; // " [Meta-the-difference-between-the-two-font-4-D] magic phrase that turns on hollows display
-String fontDataFolder = "mtdbt2f-4d --steps 70 --exit 700 --weight 5 200 --slant -.2 .2 --super .5 .8 --pen 0 .333 3 0 720"; // folder name that contains MTDBT2F4D range
+// String fontDataFolder = "mtdbt2f-4d --steps 70 --exit 700 --weight 5 200 --slant -.2 .2 --super .5 .8 --pen 0 .333 3 0 720"; // folder name that contains MTDBT2F4D range
+// String fontDataFolder = "mtdbt2f-make --file mtdbt2f4d-init.mf --counter 1 --steps 5 --weight 70 70 --slant 0 0 --super 0.25 1.25 --pen 0 1 1 0 0"; // folder name that contains MTDBT2F4D range
+String fontDataFolder = "mtdbt2f-make --file mtdbt2f4d-init.mf --counter 1 --steps 20 --weight 70 70 --slant 0 0 --super 0.15 1.75 --pen 0 1 1 0 0"; // folder name that contains MTDBT2F4D range
+
 String QTFilename = "Letter-and-Spirit.mov"; // name for Quicktime output file
 String pdfFilename = "Letter-and-Spirit"; // name for PDF file sequence
 String pngFilename = "Letter-and-Spirit"; // name for PNG file sequence
@@ -87,7 +90,7 @@ int counter = 0; // main counter -- increments in draw() loop when % delaySpeed 
 int scriptLineCounter = 0;  // pointer to position in script[]
 int cuesLineCounter = 0; // pointer to position in cues[]
 int fontsLineCounter = 0; // pointer to position in fonts[]
-int fontSize = 99;  // [44][54][66}[80][84][99][99*4] points
+int fontSize = 66;  // [44][54][66}[80][84][99][99*4] points
 int fontLength = 0;  // length of font[] (computed when filled)
 int thisFont = 0; // pointer to font[] of currently selected
 int fontRangeStart = 0; // pointer to font[], range min
@@ -117,12 +120,9 @@ void setup() {
   // 854 x 480 is 480p resolution uses fontSize 44
   // 5760 x 1080 for Jumex, fontsize 99*4
 
-  int thisW = 1920;  // global width
-  int thisH = 1080;  // global height
-
   /*
   if (outputQT) {
-   mm = new MovieMaker(this, thisW, thisH, "out/mov/" + QTFilename, 30, MovieMaker.ANIMATION, MovieMaker.HIGH);
+   mm = new MovieMaker(this, 1280, 720, "out/mov/" + QTFilename, 30, MovieMaker.ANIMATION, MovieMaker.HIGH);
    if ( mm != null ) {
    println("Quicktime output to " + QTFilename);
    }
@@ -131,11 +131,10 @@ void setup() {
 
   // declare size after mm object 
 
-  size(thisW, thisH);  // generic
-  frame.setBackground(new java.awt.Color(0, 0, 0));
+  size(1280, 720);
 
+  frame.setBackground(new java.awt.Color(0, 0, 0)); 
   frameRate(30); // this seems to matter
-
   background(thisBackground);
   fill(thisFill);
   textSize(fontSize);
