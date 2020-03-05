@@ -240,9 +240,14 @@ while [  $COUNTER -le $STEPS_COUNTER ]; do
 	# run compile script to make fonts
 	# if $FOLDERS then cp into sequenced folders
 
-        if [ "$QUIET" != "1" ]; then
-		mtdbt2f-compile $FILENAME
-		if [ "$ARCHIVE" == "1" ]; then
+    # mtdbt2f-compile requires `` to execute command outside of this shell 
+    # or maybe because all is running in zsh (not sure)
+    # now that is running fontforge gui app as a temporary solution
+    # in mtdbt2f-compile
+
+    if [ "$QUIET" != "1" ]; then
+        `mtdbt2f-compile $FILENAME`
+	if [ "$ARCHIVE" == "1" ]; then
 			cp $FILENAME.ttf Out/$FILENAME-$COUNTER.ttf
 			mv $FILENAME.ttf Out/
 		else
