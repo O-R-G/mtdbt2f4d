@@ -11,7 +11,7 @@
 # assumes paths relative to this file unless explicitly stated
 
 COUNTER=0
-EXIT=521			# the total number of fonts to try
+EXIT=618			# the total number of fonts to try
 SLEEP=5				# this if for dev only
 
 # configuration
