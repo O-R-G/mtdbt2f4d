@@ -15,7 +15,7 @@
 // need to document use of keys
 
 // import processing.video.*;
-import processing.pdf.*;    // comment if not exporting PDF for performance
+// import processing.pdf.*;    // comment if not exporting PDF for performance
 
 // objects
 
@@ -106,6 +106,12 @@ int thisBackground = 0;
 int thisFill = 255;
 int baselineAdjust = 20;	// [20] 40 jumex
 
+// size
+
+public void settings() {
+
+  size(1920, 1080);     // when not using PDE, size() can only be used inside settings()
+}
 
 void setup() {
 
@@ -131,9 +137,8 @@ void setup() {
 
   // declare size after mm object 
 
-  size(1280, 720);
-
-  frame.setBackground(new java.awt.Color(0, 0, 0)); 
+  // size(1280, 720);
+  // frame.setBackground(new java.awt.Color(0, 0, 0)); 
   frameRate(30); // this seems to matter
   background(thisBackground);
   fill(thisFill);
