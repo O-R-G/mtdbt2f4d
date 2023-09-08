@@ -10,7 +10,9 @@ MAGNIFICATION=1500;
 # ENCODING=/usr/local/texlive/2016basic/texmf-dist/fonts/enc/dvips/tetex/mtdbt2f.enc
 # ENCODING=/usr/local/texlive/2019/texmf-dist/fonts/enc/dvips/tetex/mtdbt2f.enc
 # ENCODING=/usr/local/texlive/2020basic/texmf-dist/fonts/enc/dvips/tetex/mtdbt2f.enc
-ENCODING=/usr/local/texlive/2022basic/texmf-dist/fonts/enc/dvips/tetex/mtdbt2f.enc
+# ENCODING=/usr/local/texlive/2022basic/texmf-dist/fonts/enc/dvips/tetex/mtdbt2f.enc
+ENCODING=/usr/local/texlive/2023basic/texmf-dist/fonts/enc/dvips/tetex/mtdbt2f.enc
+
 FORMAT="TTF"
 IN=$1 			# collect file from command line
 ACCENTS=0; 		# [0] absolute (default) or [1] relative position for accents 
