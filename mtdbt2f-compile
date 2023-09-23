@@ -5,12 +5,6 @@
 FILEDATE="$(date +'%Y%m%d-%H%M%S')"
 WORKINGDIRECTORY="$(pwd)"
 MAGNIFICATION=1500;
-# ENCODING=/usr/local/texlive/2011basic/texmf/fonts/enc/dvips/tetex/mtdbt2f.enc
-# ENCODING=/usr/local/texlive/2015basic/texmf-dist/fonts/enc/dvips/tetex/mtdbt2f.enc
-# ENCODING=/usr/local/texlive/2016basic/texmf-dist/fonts/enc/dvips/tetex/mtdbt2f.enc
-# ENCODING=/usr/local/texlive/2019/texmf-dist/fonts/enc/dvips/tetex/mtdbt2f.enc
-# ENCODING=/usr/local/texlive/2020basic/texmf-dist/fonts/enc/dvips/tetex/mtdbt2f.enc
-# ENCODING=/usr/local/texlive/2022basic/texmf-dist/fonts/enc/dvips/tetex/mtdbt2f.enc
 ENCODING=/usr/local/texlive/2023basic/texmf-dist/fonts/enc/dvips/tetex/mtdbt2f.enc
 
 FORMAT="TTF"
@@ -85,9 +79,8 @@ for FILE in $FILESTRING.mf; do
 
 		# build accents, set Ascent and Descent
 		# still need to add corrections for specific characters and perhaps limit the # of total accented characters
-     		# fontforge -lang=ff -c 'Open($1); Simplify(128+32+8,1.5); Generate($2)' $FONT.ttf $FONT.ttf 2>> log.txt
-
-     		# fontforge -lang=ff -c 'Open($1); Simplify(128+32+8,1.5); Reencode("unicode"); SelectWorthOutputting(); SelectInvert(); BuildAccented(); SetOS2Value("HHeadAscentIsOffset",0); SetOS2Value("HHeadAscent",750); SetOS2Value("HHeadDescentIsOffset",0); SetOS2Value("HHeadDescent",-250); Generate($2)' $FONT.ttf $FONT.ttf 2>> log.txt
+        # fontforge -lang=ff -c 'Open($1); Simplify(128+32+8,1.5); Generate($2)' $FONT.ttf $FONT.ttf 2>> log.txt     		
+        # fontforge -lang=ff -c 'Open($1); Simplify(128+32+8,1.5); Reencode("unicode"); SelectWorthOutputting(); SelectInvert(); BuildAccented(); SetOS2Value("HHeadAscentIsOffset",0); SetOS2Value("HHeadAscent",750); SetOS2Value("HHeadDescentIsOffset",0); SetOS2Value("HHeadDescent",-250); Generate($2)' $FONT.ttf $FONT.ttf 2>> log.txt
 
 		# and adjust positions of accents
 		# either absolute position [default]
@@ -99,15 +92,15 @@ for FILE in $FILESTRING.mf; do
 
         # for now, this requires an older fontforge version (20170730), which is installed as 
         # unix gui app that runs under xQuartz as somehow the commandline fontforge
-        # which is a newer version (20190801) will not admit the SelectFewer() command as scripted
+        # which is a newer version (20230101) will not admit the SelectFewer() command as scripted
         # and this throws off the unicode positioning and refs for all of the other glyphs
         # all of the other scripting commands work in fontforge 20190801, and maybe this
         # will be fixed in a future version, but for now requires two fontforges
-        # one (fontforge 20190801) command line only installed with homebrew in /usr/local/bin, 
-        # & one (fontforge 20170730) installed with homebrew cask in /Applications 
+        # one (20230101) command line only installed with homebrew in /usr/local/bin, 
+        # & one (20170730) installed with manually in /Applications from 
+        # https://fontforge.org/en-US/downloads/mac-dl/
 
-		# fontforge -lang=ff -c 'Open($1); \
-        /Applications/FontForge.app/Contents/MacOS/FontForge -lang=ff -c 'Open($1); \
+        /Applications/FontForge.app/Contents/Resources/opt/local/bin/fontforge -lang=ff -c 'Open($1); \
 		    Simplify(128+32+8,1.5); \
 		    Reencode("unicode"); \
 		    SelectWorthOutputting(); \
@@ -159,17 +152,7 @@ for FILE in $FILESTRING.mf; do
 	else
 		# absolutely positioned accents
                 
-        # for now, this requires an older fontforge version (20170730), which is installed as 
-        # unix gui app that runs under xQuartz as somehow the commandline fontforge
-        # which is a newer version (20190801) will not admit the SelectFewer() command as scripted
-        # and this throws off the unicode positioning and refs for all of the other glyphs
-        # all of the other scripting commands work in fontforge 20190801, and maybe this
-        # will be fixed in a future version, but for now requires two fontforges
-        # one (fontforge 20190801) command line only installed with homebrew in /usr/local/bin, 
-        # & one (fontforge 20170730) installed with homebrew cask in /Applications 
-
-		# fontforge -lang=ff -c 'Open($1); \
-        /Applications/FontForge.app/Contents/MacOS/FontForge -lang=ff -c 'Open($1); \
+        /Applications/FontForge.app/Contents/Resources/opt/local/bin/fontforge -lang=ff -c 'Open($1); \
             Simplify(128+32+8,1.5); \
             Reencode("unicode"); \
             SelectWorthOutputting(); \
