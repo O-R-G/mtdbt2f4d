@@ -1,0 +1,223 @@
+#!/bin/bash
+
+# init
+
+FILEDATE="$(date +'%Y%m%d-%H%M%S')"
+WORKINGDIRECTORY="$(pwd)"
+MAGNIFICATION=1500;
+ENCODING=/usr/local/texlive/2023basic/texmf-dist/fonts/enc/dvips/tetex/mtdbt2f.enc
+
+FORMAT="TTF"
+IN=$1 			# collect file from command line
+ACCENTS=0; 		# [0] absolute (default) or [1] relative position for accents 
+WEIGHTNAME='Regular';
+COPYRIGHT='Dexter-Sinister...Meta-the-Difference-Between-the-2-Font...based-on-MetaFont-original-geometry-by-Donald-Knuth-and-Anthony-Phan.';
+VERSION='v1.1-2013'; 
+VERBOSE=0		# [0] dont show mf or open ttf; [1] do show mf and open completed ttf
+
+
+# parse command line options
+
+while [ "$1" != "" ]; do
+    case $1 in
+        -f | --file )           shift
+                                IN=$1;;
+        -v | --verbose )        shift
+                                VERBOSE=$1;;
+        -h | --help ) echo -e "\ Usage: mtdbt2f-compile-accents 
+[OPTION]... [FILE]... Compile Meta-the-Difference-Between-the-2-Font files as .ttf with correctly positioned accents from .ttf source.
+
+  -f, --file			FILE in truetype format (.ttf)
+  -v, --verbose			open .ttf in Font Book
+  -h, --help			show help
+"
+                                exit;;
+    esac
+    shift
+done
+
+
+
+# set file search string 
+
+if [ "$IN" ]; then FILESTRING=$IN; else FILESTRING=*; fi
+
+
+
+# welcome
+
+echo -e "Welcome to Meta-the-Difference-Between-the-Two-Font compile accents. \r"
+echo -e "Today is $(date) \r"
+echo -e "*\r"
+echo -e "Current working directory is $WORKINGDIRECTORY \r" 
+echo -e "$DATE" > log.txt
+
+
+
+# main
+
+for FILE in $FILESTRING.ttf; do
+echo $FILE;
+	if [ -f "$FILE" ]; then
+        
+		if [ "$VERBOSE" == "1" ]; then
+            echo "** verbose **"
+		fi
+
+		# mftrace runs mf, potrace and fontforge
+		
+		# fontforge post-processing
+		# add the post-building of accented and composite characters in ff-accents script
+		FONT="$(basename $FILE .ttf)"
+		echo -e "\n$FONT" >> log.txt
+
+		# build accents, set Ascent and Descent
+		# still need to add corrections for specific characters and perhaps limit the # of total accented characters
+        # fontforge -lang=ff -c 'Open($1); Simplify(128+32+8,1.5); Generate($2)' $FONT.ttf $FONT.ttf 2>> log.txt     		
+        # fontforge -lang=ff -c 'Open($1); Simplify(128+32+8,1.5); Reencode("unicode"); SelectWorthOutputting(); SelectInvert(); BuildAccented(); SetOS2Value("HHeadAscentIsOffset",0); SetOS2Value("HHeadAscent",750); SetOS2Value("HHeadDescentIsOffset",0); SetOS2Value("HHeadDescent",-250); Generate($2)' $FONT.ttf $FONT.ttf 2>> log.txt
+
+		# and adjust positions of accents
+		# either absolute position [default]
+		# or relative [using flag]
+
+        if [ "$ACCENTS" == "1" ]; then
+
+		# relatively positioned accents
+
+        # for now, this requires an older fontforge version (20170730), which is installed as 
+        # unix gui app that runs under xQuartz as somehow the commandline fontforge
+        # which is a newer version (20230101) will not admit the SelectFewer() command as scripted
+        # and this throws off the unicode positioning and refs for all of the other glyphs
+        # all of the other scripting commands work in fontforge 20190801, and maybe this
+        # will be fixed in a future version, but for now requires two fontforges
+        # one (20230101) command line only installed with homebrew in /usr/local/bin, 
+        # & one (20170730) installed with manually in /Applications from 
+        # https://fontforge.org/en-US/downloads/mac-dl/
+
+        /Applications/FontForge.app/Contents/Resources/opt/local/bin/fontforge -lang=ff -c 'Open($1); \
+		    Simplify(128+32+8,1.5); \
+		    Reencode("unicode"); \
+		    SelectWorthOutputting(); \
+		    SelectInvert(); \
+		    SelectFewer(0x0100, 0xFFFF); \
+		    BuildAccented(); \
+		    SelectSingletons(0x00c9); \
+		    MoveReference(-100,0,"acute"); \
+		    SelectSingletons(0x00ca); \
+		    MoveReference(-100,0,"circumflex"); \
+		    SelectSingletons(0x00cb); \
+		    MoveReference(-100,0,"dieresis"); \
+		    SelectSingletons(0x00d1); \
+		    MoveReference(225,0,"tilde"); \
+		    SelectSingletons(0x00d9); \
+		    MoveReference(40,0,"grave"); \
+		    SelectSingletons(0x00da); \
+		    MoveReference(40,0,"acute"); \
+		    SelectSingletons(0x00db); \
+		    MoveReference(10,0,"circumflex"); \
+		    SelectSingletons(0x00dc); \
+		    MoveReference(20,0,"dieresis"); \
+		    SelectSingletons(0x00dd); \
+		    MoveReference(230,0,"acute"); \
+		    SelectSingletons(0x00e4); \
+		    MoveReference(10,0,"dieresis"); \
+		    SelectSingletons(0x00f6); \
+		    MoveReference(10,0,"dieresis"); \
+		    SelectSingletons(0x00f9); \
+		    MoveReference(160,0,"grave"); \
+		    SelectSingletons(0x00fa); \
+		    MoveReference(100,0,"acute"); \
+		    SelectSingletons(0x00fb); \
+		    MoveReference(144,0,"circumflex"); \
+		    SelectSingletons(0x00fc); \
+		    MoveReference(156,0,"dieresis"); \
+		    SelectSingletons(0x00fd); \
+		    MoveReference(100,0,"acute"); \
+		    SelectSingletons(0x00ff); \
+		    MoveReference(150,0,"dieresis"); \
+		    SetOS2Value("HHeadAscentIsOffset",0); \
+		    SetOS2Value("HHeadAscent",750); \
+		    SetOS2Value("HHeadDescentIsOffset",0); \
+		    SetOS2Value("HHeadDescent",-250); \
+		    SetFontNames($3,$3,$3,$4,$5,$6); \
+		    Generate($2)' $FONT.ttf $FONT.ttf $FONT $WEIGHTNAME $COPYRIGHT $VERSION 2>> log.txt
+    
+    		echo "** fontforge ok **"
+	else
+		# absolutely positioned accents
+                
+        /Applications/FontForge.app/Contents/Resources/opt/local/bin/fontforge -lang=ff -c 'Open($1); \
+            Simplify(128+32+8,1.5); \
+            Reencode("unicode"); \
+            SelectWorthOutputting(); \
+            SelectInvert(); \
+            SelectFewer(0x0100, 0xFFFF); \
+            BuildAccented(); \
+            SelectSingletons(0x00c8); \
+            PositionReference(90,250,"grave"); \
+            SelectSingletons(0x00c9); \
+            PositionReference(130,250,"acute"); \
+            SelectSingletons(0x00ca); \
+            PositionReference(90,250,"circumflex"); \
+            SelectSingletons(0x00cb); \
+            PositionReference(90,250,"dieresis"); \
+            SelectSingletons(0x00d1); \
+            PositionReference(130,250,"tilde"); \
+            SelectSingletons(0x00d9); \
+            PositionReference(90,250,"grave"); \
+            SelectSingletons(0x00da); \
+            PositionReference(130,250,"acute"); \
+            SelectSingletons(0x00db); \
+            PositionReference(130,250,"circumflex"); \
+            SelectSingletons(0x00dc); \
+            PositionReference(130,250,"dieresis"); \
+            SelectSingletons(0x00dd); \
+            PositionReference(130,250,"acute"); \
+            SelectSingletons(0x00e0); \
+            PositionReference(0,-25,"grave"); \
+            SelectSingletons(0x00e1); \
+            PositionReference(30,-25,"acute"); \
+            SelectSingletons(0x00e2); \
+            PositionReference(20,-25,"circumflex"); \
+            SelectSingletons(0x00e3); \
+            PositionReference(30,-25,"tilde"); \
+            SelectSingletons(0x00e4); \
+            PositionReference(10,-88,"dieresis"); \
+            SelectSingletons(0x00e5); \
+            PositionReference(-80,-40,"ring"); \
+            SelectSingletons(0x00f6); \
+            PositionReference(10,-88,"dieresis"); \
+            SelectSingletons(0x00f9); \
+            PositionReference(20,-25,"grave"); \
+            SelectSingletons(0x00fa); \
+            PositionReference(50,-25,"acute"); \
+            SelectSingletons(0x00fb); \
+            PositionReference(30,-25,"circumflex"); \
+            SelectSingletons(0x00fc); \
+            PositionReference(30,-88,"dieresis"); \
+            SelectSingletons(0x00fd); \
+            PositionReference(20,-25,"acute"); \
+            SelectSingletons(0x00ff); \
+            PositionReference(0,-88,"dieresis"); \
+            SetOS2Value("HHeadAscentIsOffset",0); \
+            SetOS2Value("HHeadAscent",750); \
+            SetOS2Value("HHeadDescentIsOffset",0); \
+            SetOS2Value("HHeadDescent",-250); \
+        	SetFontNames($3,$3,$3,$4,$5,$6); \
+		    Generate($2)' $FONT.ttf $FONT.ttf $FONT $WEIGHTNAME $COPYRIGHT $VERSION 2>> log.txt
+
+            echo "** fontforge ok **"
+	fi
+
+		if [ "$VERBOSE" == "1" ]; then
+			# open finished .ttf
+			open -a "Font Book" $FILESTRING.ttf
+		fi
+
+    	fi
+done
+
+echo -e "** mtdbt2f-compile-accents ok ** \r"
+echo -e "Bye."
+
+# end
