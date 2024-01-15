@@ -100,8 +100,8 @@ for FILE in $FILESTRING.mf; do
         # & one (20170730) installed with manually in /Applications from 
         # https://fontforge.org/en-US/downloads/mac-dl/
 
-        #/Applications/FontForge.app/Contents/Resources/opt/local/bin/fontforge -lang=ff -c 'Open($1); \
-        fontforge -lang=ff -c 'Open($1); \
+        # fontforge -lang=ff -c 'Open($1); \
+        /Applications/FontForge.app/Contents/Resources/opt/local/bin/fontforge -lang=ff -c 'Open($1); \
 		    Simplify(128+32+8,1.5); \
 		    Reencode("unicode"); \
 		    SelectWorthOutputting(); \
@@ -153,8 +153,8 @@ for FILE in $FILESTRING.mf; do
 	else
 		# absolutely positioned accents
                 
-        #/Applications/FontForge.app/Contents/Resources/opt/local/bin/fontforge -lang=ff -c 'Open($1); \
-        fontforge -lang=ff -c 'Open($1); \
+        # fontforge -lang=ff -c 'Open($1); \
+        /Applications/FontForge.app/Contents/Resources/opt/local/bin/fontforge -lang=ff -c 'Open($1); \
             Simplify(128+32+8,1.5); \
             Reencode("unicode"); \
             SelectWorthOutputting(); \
