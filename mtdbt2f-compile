@@ -207,6 +207,11 @@ for FILE in $FILESTRING.mf; do
             PositionReference(20,-25,"acute"); \
             SelectSingletons(0x00ff); \
             PositionReference(0,-88,"dieresis"); \
+            SelectSingletons("Wacute", "Wcircumflex", "Wdieresis", "Wgrave", "Ycircumflex", "Ydieresis", "Ygrave", \
+                "wacute", "wcircumflex", "wdieresis", "wgrave", "ycircumflex", "ygrave"); \
+            BuildAccented(); \
+            SelectSingletons("IJ", "ij");
+            BuildComposite(); \
             SetOS2Value("HHeadAscentIsOffset",0); \
             SetOS2Value("HHeadAscent",750); \
             SetOS2Value("HHeadDescentIsOffset",0); \
