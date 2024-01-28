@@ -210,6 +210,43 @@ for FILE in $FILESTRING.mf; do
             SelectSingletons("Wacute", "Wcircumflex", "Wdieresis", "Wgrave", "Ycircumflex", "Ydieresis", "Ygrave", \
                 "wacute", "wcircumflex", "wdieresis", "wgrave", "ycircumflex", "ygrave"); \
             BuildAccented(); \
+
+            SelectSingletons("Wacute"); \
+            PositionReference(255,245,"acute"); \
+            SelectSingletons("Wcircumflex"); \
+            PositionReference(255,245,"asciicircum"); \
+            SelectSingletons("Wdieresis"); \
+            PositionReference(255,245,"dieresis"); \
+            SelectSingletons("Wgrave"); \
+            PositionReference(255,245,"grave"); \
+
+            SelectSingletons("Yacute"); \
+            PositionReference(110,245,"acute"); \
+            SelectSingletons("Ycircumflex"); \
+            PositionReference(110,245,"asciicircum"); \
+            SelectSingletons("Ydieresis"); \
+            PositionReference(110,245,"dieresis"); \
+            SelectSingletons("Ygrave"); \
+            PositionReference(110,245,"grave"); \
+
+            SelectSingletons("wacute"); \
+            PositionReference(120,-28,"acute"); \
+            SelectSingletons("wcircumflex"); \
+            PositionReference(120,-27,"asciicircum"); \
+            SelectSingletons("wdieresis"); \
+            PositionReference(120,-88,"dieresis"); \
+            SelectSingletons("wgrave"); \
+            PositionReference(120,-28,"grave"); \
+
+            SelectSingletons("yacute"); \
+            PositionReference(22,-258,"acute"); \
+            SelectSingletons("ycircumflex"); \
+            PositionReference(22,-27,"asciicircum"); \
+            SelectSingletons("ydieresis"); \
+            PositionReference(22,-88,"dieresis"); \
+            SelectSingletons("ygrave"); \
+            PositionReference(22,-28,"grave"); \
+
             SelectSingletons("IJ", "ij");
             BuildComposite(); \
             SetOS2Value("HHeadAscentIsOffset",0); \
