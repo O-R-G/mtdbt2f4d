@@ -5,7 +5,7 @@
 FILEDATE="$(date +'%Y%m%d-%H%M%S')"
 WORKINGDIRECTORY="$(pwd)"
 MAGNIFICATION=1500;
-ENCODING=/usr/local/texlive/2023basic/texmf-dist/fonts/enc/dvips/tetex/mtdbt2f.enc
+ENCODING=/usr/local/texlive/2024basic/texmf-dist/fonts/enc/dvips/tetex/mtdbt2f.enc
 
 FORMAT="TTF"
 IN=$1 			# collect file from command line
@@ -207,6 +207,7 @@ for FILE in $FILESTRING.mf; do
             PositionReference(20,-25,"acute"); \
             SelectSingletons(0x00ff); \
             PositionReference(0,-88,"dieresis"); \
+
             SelectSingletons("Wacute", "Wcircumflex", "Wdieresis", "Wgrave", "Ycircumflex", "Ydieresis", "Ygrave", \
                 "wacute", "wcircumflex", "wdieresis", "wgrave", "ycircumflex", "ygrave"); \
             BuildAccented(); \
@@ -239,13 +240,30 @@ for FILE in $FILESTRING.mf; do
             PositionReference(120,-28,"grave"); \
 
             SelectSingletons("yacute"); \
-            PositionReference(22,-258,"acute"); \
+            PositionReference(22,-28,"acute"); \
             SelectSingletons("ycircumflex"); \
             PositionReference(22,-27,"asciicircum"); \
             SelectSingletons("ydieresis"); \
             PositionReference(22,-88,"dieresis"); \
             SelectSingletons("ygrave"); \
             PositionReference(22,-28,"grave"); \
+
+            SelectSingletons("Aogonek", "aogonek", "Ccaron", "ccaron", "Eogonek", "eogonek", \
+                "Edotaccent", "edotaccent", "Iogonek", "iogonek", "Scaron", "scaron", \
+                "Uogonek", "uogonek", "Umacron", "umacron", "Zcaron", "zcaron"); \
+            BuildAccented(); \
+
+            SelectSingletons("Aogonek"); \
+            PositionReference(22,0,"ogonek"); \
+
+            SelectSingletons("Edotaccent"); \
+            PositionReference(120,245,"dotaccent"); \
+
+            SelectSingletons("Umacron"); \
+            PositionReference(120,245,"macron"); \
+
+            SelectSingletons("umacron"); \
+            PositionReference(22,0,"macron"); \
 
             SelectSingletons("IJ", "ij");
             BuildComposite(); \
