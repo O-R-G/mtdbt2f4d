@@ -161,6 +161,8 @@ for FILE in $FILESTRING.mf; do
             SelectInvert(); \
             SelectFewer(0x0100, 0xFFFF); \
             BuildAccented(); \
+            # BuildComposite(); \
+
             SelectSingletons(0x00c8); \
             PositionReference(90,250,"grave"); \
             SelectSingletons(0x00c9); \
@@ -255,18 +257,61 @@ for FILE in $FILESTRING.mf; do
 
             SelectSingletons("Aogonek"); \
             PositionReference(22,0,"ogonek"); \
-
             SelectSingletons("Edotaccent"); \
             PositionReference(120,245,"dotaccent"); \
-
             SelectSingletons("Umacron"); \
             PositionReference(120,245,"macron"); \
-
             SelectSingletons("umacron"); \
             PositionReference(22,0,"macron"); \
 
-            SelectSingletons("IJ", "ij");
+            SelectSingletons("IJ", "ij"); \
             BuildComposite(); \
+
+            SelectSingletons("grave"); \
+            CopyReference(); \
+            SelectSingletons("gravecomb"); \
+            Paste(); \
+
+            SelectSingletons("acute"); \
+            CopyReference(); \
+            SelectSingletons("acutecomb"); \
+            Paste(); \
+
+            SelectSingletons("asciitilde"); \
+            CopyReference(); \
+            SelectSingletons("tildecomb"); \
+            Paste(); \
+
+            SelectSingletons("cedilla"); \
+            CopyReference(); \
+            SelectSingletons(0x0327); \
+            SetGlyphName("cedillacomb"); \
+            Paste(); \
+
+            SelectSingletons("asciicircum"); \
+            CopyReference(); \
+            SelectSingletons(0x0302); \
+            SetGlyphName("circumflexcomb"); \
+            Paste(); \
+
+            SelectSingletons("dotaccent"); \
+            CopyReference(); \
+            SelectSingletons(0x0307); \
+            SetGlyphName("dotaccentcomb"); \
+            Paste(); \
+
+            SelectSingletons("dieresis"); \
+            CopyReference(); \
+            SelectSingletons(0x0308); \
+            SetGlyphName("dieresiscomb"); \
+            Paste(); \
+
+            SelectSingletons("ring"); \
+            CopyReference(); \
+            SelectSingletons(0x030A); \
+            SetGlyphName("ringcomb"); \
+            Paste(); \
+
             SetOS2Value("HHeadAscentIsOffset",0); \
             SetOS2Value("HHeadAscent",750); \
             SetOS2Value("HHeadDescentIsOffset",0); \
@@ -285,7 +330,23 @@ for FILE in $FILESTRING.mf; do
     fi
 done
 
+# xtra for ff script tmp
+# SelectAll(); \
+# BuildComposite(); \
+
 echo -e "** mtdbt2f-compile ok ** \r"
 echo -e "Bye."
 
 # end
+
+exit
+
+
+
+
+
+
+
+
+
+
