@@ -9,7 +9,6 @@ ENCODING=/usr/local/texlive/2024basic/texmf-dist/fonts/enc/dvips/tetex/mtdbt2f.e
 
 FORMAT="TTF"
 IN=$1 			# collect file from command line
-ACCENTS=0; 		# [0] absolute (default) or [1] relative position for accents 
 WEIGHTNAME='Regular';
 COPYRIGHT='Dexter-Sinister...Meta-the-Difference-Between-the-2-Font...based-on-MetaFont-original-geometry-by-Donald-Knuth-and-Anthony-Phan.';
 VERSION='v1.1-2013'; 
@@ -86,10 +85,6 @@ for FILE in $FILESTRING.mf; do
 		# either absolute position [default]
 		# or relative [using flag]
 
-        if [ "$ACCENTS" == "1" ]; then
-
-		# relatively positioned accents
-
         # for now, this requires an older fontforge version (20170730), which is installed as 
         # unix gui app that runs under xQuartz as somehow the commandline fontforge
         # which is a newer version (20230101) will not admit the SelectFewer() command as scripted
@@ -100,57 +95,6 @@ for FILE in $FILESTRING.mf; do
         # & one (20170730) installed with manually in /Applications from 
         # https://fontforge.org/en-US/downloads/mac-dl/
 
-        # fontforge -lang=ff -c 'Open($1); \
-        /Applications/FontForge.app/Contents/Resources/opt/local/bin/fontforge -lang=ff -c 'Open($1); \
-		    Simplify(128+32+8,1.5); \
-		    Reencode("unicode"); \
-		    SelectWorthOutputting(); \
-		    SelectInvert(); \
-		    SelectFewer(0x0100, 0xFFFF); \
-		    BuildAccented(); \
-		    SelectSingletons(0x00c9); \
-		    MoveReference(-100,0,"acute"); \
-		    SelectSingletons(0x00ca); \
-		    MoveReference(-100,0,"asciicircum"); \
-		    SelectSingletons(0x00cb); \
-		    MoveReference(-100,0,"dieresis"); \
-		    SelectSingletons(0x00d1); \
-		    MoveReference(225,0,"asciitilde"); \
-		    SelectSingletons(0x00d9); \
-		    MoveReference(40,0,"grave"); \
-		    SelectSingletons(0x00da); \
-		    MoveReference(40,0,"acute"); \
-		    SelectSingletons(0x00db); \
-		    MoveReference(10,0,"asciicircum"); \
-		    SelectSingletons(0x00dc); \
-		    MoveReference(20,0,"dieresis"); \
-		    SelectSingletons(0x00dd); \
-		    MoveReference(230,0,"acute"); \
-		    SelectSingletons(0x00e4); \
-		    MoveReference(10,0,"dieresis"); \
-		    SelectSingletons(0x00f6); \
-		    MoveReference(10,0,"dieresis"); \
-		    SelectSingletons(0x00f9); \
-		    MoveReference(160,0,"grave"); \
-		    SelectSingletons(0x00fa); \
-		    MoveReference(100,0,"acute"); \
-		    SelectSingletons(0x00fb); \
-		    MoveReference(144,0,"asciicircum"); \
-		    SelectSingletons(0x00fc); \
-		    MoveReference(156,0,"dieresis"); \
-		    SelectSingletons(0x00fd); \
-		    MoveReference(100,0,"acute"); \
-		    SelectSingletons(0x00ff); \
-		    MoveReference(150,0,"dieresis"); \
-		    SetOS2Value("HHeadAscentIsOffset",0); \
-		    SetOS2Value("HHeadAscent",750); \
-		    SetOS2Value("HHeadDescentIsOffset",0); \
-		    SetOS2Value("HHeadDescent",-250); \
-		    SetFontNames($3,$3,$3,$4,$5,$6); \
-		    Generate($2)' $FONT.ttf $FONT.ttf $FONT $WEIGHTNAME $COPYRIGHT $VERSION 2>> log.txt
-    
-    		echo "** fontforge ok **"
-	else
 		# absolutely positioned accents
                 
         # fontforge -lang=ff -c 'Open($1); \
@@ -161,7 +105,6 @@ for FILE in $FILESTRING.mf; do
             SelectInvert(); \
             SelectFewer(0x0100, 0xFFFF); \
             BuildAccented(); \
-            # BuildComposite(); \
 
             SelectSingletons(0x00c8); \
             PositionReference(90,250,"grave"); \
@@ -320,7 +263,19 @@ for FILE in $FILESTRING.mf; do
 		    Generate($2)' $FONT.ttf $FONT.ttf $FONT $WEIGHTNAME $COPYRIGHT $VERSION 2>> log.txt
 
             echo "** fontforge ok **"
-	fi
+    
+        # post-processing, build additional accents
+
+        # BuildAccented() works better in fontforge 2017
+        # BuildComposite() is it worth it?
+        # BuildComposite(); \
+
+        # fontforge -lang=ff -c 'Open($1); \
+        /Applications/FontForge.app/Contents/Resources/opt/local/bin/fontforge -lang=ff -c 'Open($1); \
+            Reencode("unicode"); \
+            SelectAll(); \
+            BuildAccented(); \
+            Generate($2)' $FONT.ttf $FONT.ttf $FONT $WEIGHTNAME $COPYRIGHT $VERSION 2>> log.txt
 
 		if [ "$VERBOSE" == "1" ]; then
 			# open finished .ttf
