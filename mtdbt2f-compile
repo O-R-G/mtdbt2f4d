@@ -271,11 +271,11 @@ for FILE in $FILESTRING.mf; do
         # BuildComposite(); \
 
         # fontforge -lang=ff -c 'Open($1); \
-        /Applications/FontForge.app/Contents/Resources/opt/local/bin/fontforge -lang=ff -c 'Open($1); \
-            Reencode("unicode"); \
-            SelectAll(); \
-            BuildAccented(); \
-            Generate($2)' $FONT.ttf $FONT.ttf $FONT $WEIGHTNAME $COPYRIGHT $VERSION 2>> log.txt
+        # /Applications/FontForge.app/Contents/Resources/opt/local/bin/fontforge -lang=ff -c 'Open($1); \
+        #    Reencode("unicode"); \
+        #    SelectAll(); \
+        #    BuildAccented(); \
+        #    Generate($2)' $FONT.ttf $FONT.ttf $FONT $WEIGHTNAME $COPYRIGHT $VERSION 2>> log.txt
 
 		if [ "$VERBOSE" == "1" ]; then
 			# open finished .ttf
