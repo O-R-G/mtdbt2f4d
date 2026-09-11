@@ -1,4 +1,4 @@
-# mtdbtf4d
+# Meta-the-difference-between-the-2-font-4-d
 
 Meta-the-difference-between-the-two-font-4-d is a Processing sketch for animated typography. It cycles through generated font variants while displaying live typing or playing text from scripts with timing and font-range cues.
 
