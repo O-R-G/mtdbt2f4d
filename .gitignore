@@ -2,3 +2,4 @@
 # git update-index --assume-unchanged FILE_NAME
 # git update-index --no-assume-unchanged FILE_NAME
 # mtdbt2f4d.txt
+.DS_Store
